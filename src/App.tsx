@@ -1,23 +1,15 @@
 import { useEffect } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
 import supabase from "./supabase-client";
-import Navbar from "./components/Navbar";
-import { Footer } from "./components/Footer";
+import ProtectedRoute from "./layouts/ProtectedRoute";
 
-// import ReloadPrompt from "./components/reloadprompt/ReloadPrompt";
 function App() {
-  // useEffect(() => {
-  //   const signin = async () => {
-  //     const sup = await supabase.auth.signInWithOAuth({
-  //       provider: "google",
-  //     });
-  //   };
-  //   signin();
-  // }, []);
-
-  //check if user is logged in, if not, redirect to login page
-
+  // Check if the user is authenticated and redirect to the login page if not
   useEffect(() => {
+    if (window.location.pathname === "/login") return;
     const checkUser = async () => {
       const userResponse = await supabase.auth.getUser();
       if (!userResponse.data.user) {
@@ -28,11 +20,21 @@ function App() {
   }, []);
 
   return (
-    <>
-      <Navbar />
-      <main>{/* <ReloadPrompt /> */}</main>
-      <Footer />
-    </>
+    <main>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </BrowserRouter>
+    </main>
   );
 }
 

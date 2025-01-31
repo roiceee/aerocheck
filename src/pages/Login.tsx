@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import supabase from "@/supabase-client";
-export default function LoginPage() {
+export default function Login() {
+  
   const handleLogin = async () => {
     supabase.auth.signInWithOAuth({ provider: "google" });
   };
