@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import AuthContext from "@/context/AuthContext";
+import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import supabase from "../supabase-client";
 
 export default function ProtectedRoute({
   children,
@@ -8,19 +8,17 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useContext(AuthContext);
 
   useEffect(() => {
     const checkUser = async () => {
-      const userResponse = await supabase.auth.getUser();
-      if (!userResponse.data.user) {
+      if (!user) {
         navigate("/login", { replace: true });
-      } else {
-        setLoading(false);
       }
     };
-    checkUser();
-  }, [navigate]);
+
+    if (!loading) checkUser();
+  }, [navigate, user, loading]);
 
   if (loading)
     return (
