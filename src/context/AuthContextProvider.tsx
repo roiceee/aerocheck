@@ -4,13 +4,18 @@ import React, { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<{ user: User | null; role: string | null }>({
+  const [user, setUser] = useState<{
+    user: User | null;
+    role: "mechanic" | "pilot" | "superadmin" | null;
+  }>({
     user: null,
     role: null,
   });
   const [loading, setLoading] = useState(true);
 
-  const getUserRole = async (user: User): Promise<string | null> => {
+  const getUserRole = async (
+    user: User
+  ): Promise<"mechanic" | "pilot" | "superadmin" | null> => {
     const { data, error } = await supabase
       .from("user_roles")
       .select("*")

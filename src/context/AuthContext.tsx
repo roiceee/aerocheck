@@ -3,9 +3,12 @@ import { createContext } from "react";
 
 // Create an authentication context
 const AuthContext = createContext<{
-  user: { user: User | null; role: string | null };
+  user: { user: User | null; role: "mechanic" | "pilot" | "superadmin" | null };
   setUser: React.Dispatch<
-    React.SetStateAction<{ user: User | null; role: string | null }>
+    React.SetStateAction<{
+      user: User | null;
+      role: "mechanic" | "pilot" | "superadmin" | null;
+    }>
   >;
   loading: boolean;
 }>({
