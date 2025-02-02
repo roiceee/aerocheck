@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       .from("user_roles")
       .select("*")
       .eq("user_id", user.id);
-    if (error) {
+    if (error || !data[0]) {
       return null;
     } else {
       return data[0].role;
@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const { data } = await supabase.auth.getUser();
       if (data?.user) {
         const role = await getUserRole(data.user);
-        setUser({ user: data.user, role });
+        setUser({ user: data.user, role: role ?? null });
       }
       setLoading(false);
     };
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const user = session?.user ?? null;
           if (user) {
             const role = await getUserRole(user);
-            setUser({ user, role });
+            setUser({ user, role: role ?? null });
           } else {
             setUser({ user: null, role: null });
           }
