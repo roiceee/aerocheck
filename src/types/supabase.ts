@@ -57,21 +57,21 @@ export type Database = {
           aircraft_model_id: string | null
           created_at: string
           id: string
-          markdown_content: string | null
+          list: Json | null
           updated_at: string | null
         }
         Insert: {
           aircraft_model_id?: string | null
           created_at?: string
           id?: string
-          markdown_content?: string | null
+          list?: Json | null
           updated_at?: string | null
         }
         Update: {
           aircraft_model_id?: string | null
           created_at?: string
           id?: string
-          markdown_content?: string | null
+          list?: Json | null
           updated_at?: string | null
         }
         Relationships: [
@@ -92,7 +92,7 @@ export type Database = {
           approved_by_superadmin: boolean
           created_at: string
           id: string
-          markdown_content: string
+          list: Json
           mechanic_id: string | null
           pilot_id: string | null
           submitted_at: string | null
@@ -106,7 +106,7 @@ export type Database = {
           approved_by_superadmin?: boolean
           created_at?: string
           id?: string
-          markdown_content: string
+          list: Json
           mechanic_id?: string | null
           pilot_id?: string | null
           submitted_at?: string | null
@@ -120,7 +120,7 @@ export type Database = {
           approved_by_superadmin?: boolean
           created_at?: string
           id?: string
-          markdown_content?: string
+          list?: Json
           mechanic_id?: string | null
           pilot_id?: string | null
           submitted_at?: string | null
