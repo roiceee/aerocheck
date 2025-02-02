@@ -1,0 +1,553 @@
+import { AircraftChecklist } from "@/types/checklistTemplate";
+
+const obj : AircraftChecklist = {
+  "preFlightCheck": [
+    {
+      "section": "CABIN",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "description": "Check that the aircraft documents are available and in or Ensure all loose equipment is correctly stowed. Aircraft is free of extraneous items.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Remove control wheel lock",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Ignition switch - OFF",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Avionics master switch - OFF",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Turn on master switch and check fuel quantity indicators.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "WARNING: When turning off the master switch, using an external power source, or pulling the propeller through by hand, treat the aircraft as if the ignition switch is on. Do not stand, nor allow anyone else to stand, within the arc of the propeller, since a loose or broken component malfunction could cause the propeller to rotate.",
+          "type": "instruction"
+        },
+        {
+          "description": "External and interior lights - ON (if night flight is contemplated - Check to ensure that they are working)",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Light and pitot heat - OFF",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Master switch - OFF",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Flight and engine controls, including trimmers and flaps for full and free movement in the correct sense.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Brake operation is normal. FIRM NOT SPONGY.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Instrument readings are consistent with ambient conditions.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Seat, belts, and harnesses for satisfactory condition, lacking and release.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Emergency equipment properly stowed, inspection dates valid.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Operation of electrical circuits.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Markings and placards are legible.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Windscreen for damage and cleanliness.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "FUSELAGE AND EMPENNAGE",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "description": "Skin covering for damage. (Left side)",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Radio aerials for damage and security, if installed.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Remove gust lock, if installed.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Flight control surfaces (rudder and elevator) for damage, freedom of movement and security of all items.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Disconnect tall tie down.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Skin covering for damage. (Right side)",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "RIGHT WING",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "description": "Disconnect wing tie-down.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Skin covering and strut for damage.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+
+    {
+      "section": "MAIN LANDING GEAR",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Main wheel for proper inflation, damage and creep. Slipp mark is align with each other.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Brake installation for external evidence of leaks and for damage and security.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "FUEL SYSTEM",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Drawin fuel sample from each drain point into a transparent container and check for water, foreign matter and correct color.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Check visually that quantities are compatible with indicator readings. Indicate Fuel Quantity, then check filler cap security.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "NOSE / POWERPLANT",
+      "isMainSection": true,
+      "tasks": []
+    },
+
+    {
+      "section": "ENGINE",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Oil level and security of filler cap and dipstick. NOTE: Minimum: 5 QTS. MAX: 6 QTS. Maximum for flights less than 3 hrs. 5 QTS Indicate QTY, in space NOTE: Not less than 5 qts for local and 6 qts for cross country flight. FOR CD 135 - Oil is at BLUE dot level.",
+          "type": "checkbox",
+          "inspection_required": "CHECK/INSPECT",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Engine oil cap for security. Slippage mark alignment.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Before first flight of the day, and after each refueling, drain fuel strainer. Pull out fuel strainer knob for 4 seconds to clear fuel systems of possible water and sediments.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Engine, as visible for leaks, signs for overheating and security of oil items.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "PROPELLER",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Blades and spinner for damage (nicks, cracks, etc.) and security.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "AIR INDUCTION SYSTEM",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Air filler/intake for cleanliness and restriction by dust or other foreign matters.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "NOSE LANDING GEAR",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Nose wheel shock absorbers and strut for leaks, proper inflation.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Nose wheel tire for proper inflation, damage and creep. Slippage mark alignment.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Remove nose tie-down.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "INSTRUMENT SYSTEM",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Flight instrument static source opening on left side of the fuselage for stoppage. KEEP CLEAN.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "LEFT WING",
+      "isMainSection": true,
+      "tasks": []
+    },
+
+    {
+      "section": "MAIN LANDING GEAR",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Main wheel for proper inflation, damage, and creep. Ensure slip marks are aligned with each other.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Brake installation for external evidence of leaks, damage, and security.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "FUEL SYSTEM",
+      "isMainSection": false,
+      "tasks": [
+        {
+          "description": "Fuel tank vent opening for stoppage.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Drain fuel sample from each drain point, inspect for water, foreign matter, and correct color.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Visually ensure quantities align with indicator readings. Indicate fuel quantity, then check filler cap security.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Skin covering and strut for damage.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Disconnect wing tie-down.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "INSTRUMENT SYSTEM / PITOT - STATIC SYSTEM",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "description": "Remove pitot tube cover (if installed) and check pitot tube opening for stoppage. Make sure Heater is working.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "STALL WARNING SYSTEM",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "description": "Stall warning vent opening for stoppage. Test for proper operation and alignment of the mark.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "LEFT WING TRAILING EDGE",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "description": "Flaps for damage and security of all items.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Aileron for damage, freedom of movement, and security of all items.",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    },
+    {
+      "section": "DISINFECTION",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "type": "instruction",
+          "description": "USE THE FF. SOLUTION (0.01% CHLOROX to 10 ml solution to 1 ml commercial CHLOROX (Zonrox) to 9 ml water.) / LYOSOL / 70% SOLUTION ISOPROPYL ALCOHOL."
+        },
+        {
+          "description": "Disinfect all touch surfaces and cockpit surfaces thoroughly.",
+          "type": "checkbox",
+          "inspection_required": "PERFORM",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Disinfect door handles and windows.",
+          "type": "checkbox",
+          "inspection_required": "PERFORM",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Disinfect flight controls, knobs, and switches.",
+          "type": "checkbox",
+          "inspection_required": "PERFORM",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Disinfect seat belt buckles and seats.",
+          "type": "checkbox",
+          "inspection_required": "PERFORM",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Disinfect oil filler cap, fuel filler cap, and coolant cap (CD-135).",
+          "type": "checkbox",
+          "inspection_required": "PERFORM",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Disinfect fuel tester, dipstick, handheld radio, aircraft checklist, and med kits.",
+          "type": "checkbox",
+          "inspection_required": "PERFORM",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    }
+  ],
+
+  "postFlightCheck": [
+    {
+      "section": "POST FLIGHT SECURITY CHECK",
+      "isMainSection": true,
+      "tasks": [
+        {
+          "description": "Parking brake - SET",
+          "type": "checkbox",
+          "inspection_required": "SET",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Radio and Electrical equipment - OFF",
+          "type": "checkbox",
+          "inspection_required": "OFF",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Mixture - idle cut-off (Pull Full out)",
+          "type": "checkbox",
+          "inspection_required": "CHECK",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Ignition and Master Switch - OFF",
+          "type": "checkbox",
+          "inspection_required": "OFF",
+          "mechanic_response": false,
+          "pilot_response": false
+        },
+        {
+          "description": "Flight Control Lock - INSTALLED",
+          "type": "checkbox",
+          "inspection_required": "LOCKED",
+          "mechanic_response": false,
+          "pilot_response": false
+        }
+      ]
+    }
+  ]
+}
+export default obj;
