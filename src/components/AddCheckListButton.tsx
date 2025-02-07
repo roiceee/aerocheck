@@ -1,4 +1,5 @@
 import { PlusIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 export default function AddCheckListButton({
@@ -6,8 +7,16 @@ export default function AddCheckListButton({
 }: {
   className?: string;
 }) {
+
+    const router = useNavigate();
+
+
+    
+
+
+
   return (
-    <Button className={className}>
+    <Button className={className} onClick={() => {router("/check/add")}}>
       <PlusIcon /> New Check
     </Button>
   );
