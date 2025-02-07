@@ -12,7 +12,7 @@ export default function ProtectedRoute({
 
   useEffect(() => {
     const checkUser = async () => {
-      if (!user) {
+      if (!user.user) {
         navigate("/login", { replace: true });
       }
     };
