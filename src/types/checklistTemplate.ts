@@ -1,7 +1,7 @@
 
 type Task = {
   description: string;
-  type: "checkbox" | "instruction";
+  type: "checkbox" | "instruction" | "input";
   inspection_required?:
     | "CHECK"
     | "INSPECT"
@@ -10,8 +10,8 @@ type Task = {
     | "OFF"
     | "LOCKED"
     | string; // Allow specific values or any string
-  mechanic_response?: boolean;
-  pilot_response?: boolean;
+  mechanic_response?: boolean | string;
+  pilot_response?: boolean | string;
 };
 
 type Section = {
