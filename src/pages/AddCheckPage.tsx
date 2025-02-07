@@ -96,14 +96,16 @@ export default function AddCheckPage() {
 
       if (checklistTemplateRes.error) throw checklistTemplateRes.error;
 
+      if (values.isExistingChecklist && (!values.date || !values.time)) {
+        alert("Please select a date and time");
+        throw new Error("Please select a date and time");
+      }
+
       const { data, error } = await supabase
         .from("checklists")
         .insert([
           {
             aircraft_model_id: values.airplaneModel,
-            submitted_at: values.isExistingChecklist
-              ? null
-              : combineDateTime(values.date!, values.time!),
             pilot_id:
               user.role === "pilot" ? user.user!.id : values.coCheckerUserId,
             mechanic_id:
@@ -113,6 +115,9 @@ export default function AddCheckPage() {
             approved_by_superadmin: false,
             template_id: checklistTemplateRes.data[0].id,
             list: checklistTemplateRes.data[0].list,
+            created_at: values.isExistingChecklist
+              ? combineDateTime(values.date as string, values.time as string) || undefined
+              : new Date().toISOString(),
           },
         ])
         .select();
@@ -133,7 +138,7 @@ export default function AddCheckPage() {
       <main>
         <h1 className="text-xl font-bold my-4">New Check</h1>
 
-        <Form {...form} >
+        <Form {...form}>
           <form
             onSubmit={form.handleSubmit((values) =>
               handleSubmit.mutate(values)
