@@ -1,6 +1,4 @@
-import { AircraftChecklist } from "@/types/checklistTemplate";
-
-const obj : AircraftChecklist = {
+{
   "preFlightCheck": [
     {
       "section": "CABIN",
@@ -550,4 +548,3 @@ const obj : AircraftChecklist = {
     }
   ]
 }
-export default obj;
