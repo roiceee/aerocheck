@@ -1,13 +1,13 @@
 import AddCheckListButton from "@/components/AddCheckListButton";
 import AuthContext from "@/context/AuthContext";
-import MainLayout from "@/layouts/MainLayout";
 import supabase from "@/supabase-client";
 import { useQuery } from "@tanstack/react-query";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { user } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const {
     data: queryData,
     isLoading,
@@ -37,9 +37,10 @@ export default function Home() {
       }
     },
   });
+  
 
   return (
-    <MainLayout>
+    <div>
       <h1 className="text-xl font-bold">My Recent Checks</h1>
       <div className="my-2">
         {isLoading ? (
@@ -49,7 +50,9 @@ export default function Home() {
         ) : queryData && queryData.length ? (
           <ul>
             {queryData.map((checklist) => (
-              <li key={checklist.id} className="border p-4 mb-2 rounded shadow">
+              <li key={checklist.id} className="border p-4 mb-2 rounded shadow" onClick={() => {
+                navigate(`/checklist/${checklist.id}`)
+              }}>
                 <h3 className="text-lg font-semibold">
                   {checklist.aircraft_models?.name || "Unknown Aircraft"}
                 </h3>
@@ -80,6 +83,6 @@ export default function Home() {
       <AddCheckListButton
         className="fixed bottom-10 right-2"
       />
-    </MainLayout>
+    </div>
   );
 }
