@@ -160,6 +160,32 @@ export type Database = {
           role?: Database["public"]["Enums"]["role_enum"] | null
           user_id?: string | null
         }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          email: string
+          id: string
+          name: string | null
+        }
+        Insert: {
+          email: string
+          id: string
+          name?: string | null
+        }
+        Update: {
+          email?: string
+          id?: string
+          name?: string | null
+        }
         Relationships: []
       }
     }
