@@ -207,7 +207,7 @@ export default function ChecklistPage() {
                             Mechanic response
                           </label>
                           <Checkbox
-                            disabled={user.role !== "mechanic"}
+                            disabled={user.role !== "mechanic"|| checklistQuery.data?.submitted_at !== null}
                             checked={task.mechanic_response as boolean}
                             className="w-5 h-5"
                             onCheckedChange={(checkedState) => {
@@ -227,7 +227,7 @@ export default function ChecklistPage() {
                             Pilot response
                           </label>
                           <Checkbox
-                            disabled={user.role !== "pilot"}
+                            disabled={user.role !== "pilot" || checklistQuery.data?.submitted_at !== null}
                             checked={task.pilot_response as boolean}
                             className="w-5 h-5"
                             onCheckedChange={(checkedState) => {

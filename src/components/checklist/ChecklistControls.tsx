@@ -101,7 +101,7 @@ export default function ChecklistControls({
           >
             {submittedAt ? "Submitted" : "Save & Submit"}
           </Button>
-          <Button onClick={onSaveClick}>
+          <Button onClick={onSaveClick} disabled={submittedAt !== null}>
             {isSaveChecklistMutationPending ? "Saving..." : "Save"}
           </Button>
         </div>
@@ -114,6 +114,9 @@ export default function ChecklistControls({
           </DialogHeader>
           <DialogDescription>
             Are you sure you want to save and submit the checklist?
+            <span className="font-bold block">
+              Note: You cannot edit the checklist anymore after submitting.
+            </span>
           </DialogDescription>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDialogOpen(false)}>

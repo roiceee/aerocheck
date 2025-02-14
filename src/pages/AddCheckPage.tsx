@@ -24,7 +24,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import AuthContext from "@/context/AuthContext";
-import MainLayout from "@/layouts/MainLayout";
 import { cn, combineDateTime } from "@/lib/utils";
 import supabase from "@/supabase-client";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -116,7 +115,8 @@ export default function AddCheckPage() {
             template_id: checklistTemplateRes.data[0].id,
             list: checklistTemplateRes.data[0].list,
             created_at: values.isExistingChecklist
-              ? combineDateTime(values.date as string, values.time as string) || undefined
+              ? combineDateTime(values.date as string, values.time as string) ||
+                undefined
               : new Date().toISOString(),
           },
         ])
@@ -134,209 +134,213 @@ export default function AddCheckPage() {
   }, [handleSubmit, navigate, user]);
 
   return (
-    <MainLayout>
-      <main>
-        <h1 className="text-xl font-bold my-4">New Check</h1>
+    <main>
+      <h1 className="text-xl font-bold my-4">New Check</h1>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit((values) =>
-              handleSubmit.mutate(values)
-            )}
-            className=" space-y-4"
-          >
-            <FormField
-              control={form.control}
-              name="airplaneModel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Aircraft Model</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select aircraft model" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        {airplaneCheckQuery.isFetched &&
-                          airplaneCheckQuery.data?.map((airplane) => (
-                            <SelectItem key={airplane.id} value={airplane.id}>
-                              {airplane.name}
-                            </SelectItem>
-                          ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="coCheckerUserId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Co-Checker</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue
-                          placeholder={`Select Co-checker (${
-                            coCheckerQuery.isLoading
-                              ? "(Loading...)"
-                              : user.role === "mechanic"
-                              ? "Pilot"
-                              : "Mechanic"
-                          })`}
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        {coCheckerQuery.isFetched &&
-                          coCheckerQuery.data?.map((pilot) => (
-                            <SelectItem key={pilot.id} value={pilot.id}>
-                              <p>{pilot.name}</p>
-                              <p className="text-sm text-muted-foreground">
-                                {pilot.email}
-                              </p>
-                            </SelectItem>
-                          ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="isExistingChecklist"
-              render={({ field }) => (
-                <FormItem className="flex items-center space-x-2">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit((values) => handleSubmit.mutate(values))}
+          className=" space-y-4"
+        >
+          <FormField
+            control={form.control}
+            name="airplaneModel"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Aircraft Model</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select aircraft model" />
+                    </SelectTrigger>
                   </FormControl>
-                  <FormLabel>This is an existing checklist</FormLabel>
-                </FormItem>
-              )}
-            />
-
-            {form.watch("isExistingChecklist") && (
-              <>
-                <FormField
-                  control={form.control}
-                  name="date"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Date</FormLabel>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <FormControl>
-                            <Button
-                              variant="outline"
-                              className={cn(
-                                "w-[280px] justify-start text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
-                            >
-                              <CalendarIcon />
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
-                            </Button>
-                          </FormControl>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                          <Calendar
-                            mode="single"
-                            selected={
-                              field.value ? new Date(field.value) : undefined
-                            }
-                            onSelect={(date) =>
-                              field.onChange(date?.toISOString())
-                            }
-                            initialFocus
-                          />
-                        </PopoverContent>
-                      </Popover>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="time"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Time</FormLabel>
-                      <FormControl>
-                        <Input type="time" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="approvedByMechanic"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormLabel>Is approved by mechanic</FormLabel>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="approvedByPilot"
-                  render={({ field }) => (
-                    <FormItem className="flex items-center space-x-2">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <FormLabel>Is approved by pilot</FormLabel>
-                    </FormItem>
-                  )}
-                />
-              </>
+                  <SelectContent>
+                    <SelectGroup>
+                      {airplaneCheckQuery.isFetched &&
+                        airplaneCheckQuery.data?.map((airplane) => (
+                          <SelectItem key={airplane.id} value={airplane.id}>
+                            {airplane.name}
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
             )}
+          />
 
-            <Button
-              type="submit"
-              disabled={handleSubmit.isPending}
-              className="w-full"
-            >
-              {handleSubmit.isPending ? "Submitting..." : "Submit"}
-            </Button>
-          </form>
-        </Form>
-      </main>
-    </MainLayout>
+          <FormField
+            control={form.control}
+            name="coCheckerUserId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  Co-Checker (
+                  {coCheckerQuery.isLoading
+                    ? "Loading..."
+                    : user.role === "mechanic"
+                    ? "Pilot"
+                    : "Mechanic"}
+                  )
+                </FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        placeholder={`Select Co-checker (${
+                          coCheckerQuery.isLoading
+                            ? "(Loading...)"
+                            : user.role === "mechanic"
+                            ? "Pilot"
+                            : "Mechanic"
+                        })`}
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      {coCheckerQuery.isFetched &&
+                        coCheckerQuery.data?.map((pilot) => (
+                          <SelectItem key={pilot.id} value={pilot.id}>
+                            <p>{pilot.name}</p>
+                            <p className="text-sm text-muted-foreground">
+                              {pilot.email}
+                            </p>
+                          </SelectItem>
+                        ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="isExistingChecklist"
+            render={({ field }) => (
+              <FormItem className="flex items-center space-x-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <FormLabel>This is an existing checklist</FormLabel>
+              </FormItem>
+            )}
+          />
+
+          {form.watch("isExistingChecklist") && (
+            <>
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-[280px] justify-start text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon />
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="time"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Time</FormLabel>
+                    <FormControl>
+                      <Input type="time" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="approvedByMechanic"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Is approved by mechanic</FormLabel>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="approvedByPilot"
+                render={({ field }) => (
+                  <FormItem className="flex items-center space-x-2">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormLabel>Is approved by pilot</FormLabel>
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
+
+          <Button
+            type="submit"
+            disabled={handleSubmit.isPending}
+            className="w-full"
+          >
+            {handleSubmit.isPending ? "Submitting..." : "Submit"}
+          </Button>
+        </form>
+      </Form>
+    </main>
   );
 }
