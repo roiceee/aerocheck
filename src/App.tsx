@@ -11,7 +11,7 @@ function App() {
   // Check if the user is authenticated and redirect to the login page if not
 
   return (
-    <main>
+    <main className="max-w-[900px] mx-auto">
       <BrowserRouter>
         <Routes>
           <Route

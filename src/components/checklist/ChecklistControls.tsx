@@ -46,7 +46,7 @@ export default function ChecklistControls({
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-neutral-50 shadow-md p-4 border-t-2">
+    <div className="fixed bottom-0 w-full bg-neutral-50 shadow-md p-4 border-t-2 max-w-[900px]">
       <div className="flex gap-2 items-center mb-2 justify-between">
         <Button
           onClick={onPreviousPageClick}
