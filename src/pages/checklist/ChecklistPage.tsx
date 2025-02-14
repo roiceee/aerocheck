@@ -1,5 +1,7 @@
 import BackButton from "@/components/BackButton";
 import ChecklistControls from "@/components/checklist/ChecklistControls";
+import DeleteButton from "@/components/checklist/DeleteButton";
+import DeletedChecklistDialog from "@/components/checklist/DeletedChecklistDialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +12,7 @@ import {
   getPilot,
   saveOrSubmit,
 } from "@/lib/checklistQueries";
+import supabase from "@/supabase-client";
 import { AircraftChecklist } from "@/types/checklistTemplate";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
@@ -29,6 +32,7 @@ export default function ChecklistPage() {
     pilot: false,
   });
   const [submitted_at, setSubmittedAt] = useState<string | null>(null);
+  const [showDeletedDialog, setShowDeletedDialog] = useState(false);
 
   // Fetch the checklist data
   const checklistQuery = useQuery({
@@ -43,6 +47,22 @@ export default function ChecklistPage() {
     // dont cache data
     staleTime: 0,
   });
+
+  supabase
+    .channel("checklists")
+    .on(
+      "postgres_changes",
+      {
+        event: "DELETE",
+        schema: "public",
+        table: "checklists",
+        filter: `id=eq.${params.id}`,
+      },
+      () => {
+        setShowDeletedDialog(true);
+      }
+    )
+    .subscribe();
 
   const mechanicQuery = useQuery({
     queryKey: [
@@ -133,8 +153,14 @@ export default function ChecklistPage() {
 
   return (
     <main className="mb-24">
-      <div>
+      <div className="w-full flex justify-between">
         <BackButton />
+        {checklistQuery.data && (
+          <DeleteButton
+            checklistId={checklistQuery.data.id}
+            disabled={checklistQuery.data.submitted_at !== null}
+          />
+        )}
       </div>
       {checklistQuery.data && (
         <div>
@@ -168,134 +194,155 @@ export default function ChecklistPage() {
 
       {/* Render the sections for the current page */}
       <h1 className="text-lg mt-6">Checklist</h1>
-      <div className="mt-4">
-        {currentSections.map((section, index) => (
-          <div
-            key={index}
-            className={`mb-6 ${
-              section.isMainSection && "border-t-2 border-primary pt-4"
-            }`}
-          >
-            <h2 className="text-lg font-semibold">
-              {section.section}{" "}
-              {section.isMainSection && (
-                <span className="text-sm text-muted-foreground">
-                  (Main Section)
-                </span>
-              )}
-            </h2>
-            <ul className="mt-2 space-y-2">
-              {section.tasks.map((task, taskIndex) => (
-                <div key={taskIndex + "-task"} className="border-b py-2">
-                  <li className="flex items-start space-x-2">
-                    {task.inspection_required && (
-                      <span className="text-sm text-muted-foreground">
-                        ({task.inspection_required})
+      {checklistQuery.isError ? (
+        <p>Error: {checklistQuery.error.message}</p>
+      ) : checklistQuery.isLoading ? (
+        <p>Loading...</p>
+      ) : !checklistQuery.data ? (
+        <p>No data found</p>
+      ) : null}
+      {checklistQuery.data && (
+        <div className="mt-4">
+          {currentSections.map((section, index) => (
+            <div
+              key={index}
+              className={`mb-6 ${
+                section.isMainSection && "border-t-2 border-primary pt-4"
+              }`}
+            >
+              <h2 className="text-lg font-semibold">
+                {section.section}{" "}
+                {section.isMainSection && (
+                  <span className="text-sm text-muted-foreground">
+                    (Main Section)
+                  </span>
+                )}
+              </h2>
+              <ul className="mt-2 space-y-2">
+                {section.tasks.map((task, taskIndex) => (
+                  <div key={taskIndex + "-task"} className="border-b py-2">
+                    <li className="flex items-start space-x-2">
+                      {task.inspection_required && (
+                        <span className="text-sm text-muted-foreground">
+                          ({task.inspection_required})
+                        </span>
+                      )}
+                      <span
+                        className={`${
+                          task.type === "instruction" && "text-sm"
+                        }`}
+                      >
+                        {task.description}
                       </span>
-                    )}
-                    <span
-                      className={`${task.type === "instruction" && "text-sm"}`}
-                    >
-                      {task.description}
-                    </span>
-                  </li>
-                  <div className="mt-5">
-                    {task.type === "checkbox" ? (
-                      <div className="flex flex-col items-end gap-2">
-                        <div className="items-top flex space-x-2">
-                          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Mechanic response
-                          </label>
-                          <Checkbox
-                            disabled={user.role !== "mechanic"|| checklistQuery.data?.submitted_at !== null}
-                            checked={task.mechanic_response as boolean}
-                            className="w-5 h-5"
-                            onCheckedChange={(checkedState) => {
-                              setChecklistState((prevState) => {
-                                if (!prevState) return prevState;
-                                const newChecklistState = { ...prevState };
-                                newChecklistState.preFlightCheck![index].tasks[
-                                  taskIndex
-                                ].mechanic_response = checkedState;
-                                return newChecklistState;
-                              });
-                            }}
-                          />
+                    </li>
+                    <div className="mt-5">
+                      {task.type === "checkbox" ? (
+                        <div className="flex flex-col items-end gap-2">
+                          <div className="items-top flex space-x-2">
+                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                              Mechanic response
+                            </label>
+                            <Checkbox
+                              disabled={
+                                user.role !== "mechanic" ||
+                                checklistQuery.data?.submitted_at !== null
+                              }
+                              checked={task.mechanic_response as boolean}
+                              className="w-5 h-5"
+                              onCheckedChange={(checkedState) => {
+                                setChecklistState((prevState) => {
+                                  if (!prevState) return prevState;
+                                  const newChecklistState = { ...prevState };
+                                  newChecklistState.preFlightCheck![
+                                    index
+                                  ].tasks[taskIndex].mechanic_response =
+                                    checkedState;
+                                  return newChecklistState;
+                                });
+                              }}
+                            />
+                          </div>
+                          <div className="items-top flex space-x-2">
+                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                              Pilot response
+                            </label>
+                            <Checkbox
+                              disabled={
+                                user.role !== "pilot" ||
+                                checklistQuery.data?.submitted_at !== null
+                              }
+                              checked={task.pilot_response as boolean}
+                              className="w-5 h-5"
+                              onCheckedChange={(checkedState) => {
+                                setChecklistState((prevState) => {
+                                  if (!prevState) return prevState;
+                                  const newChecklistState = { ...prevState };
+                                  newChecklistState.preFlightCheck![
+                                    index
+                                  ].tasks[taskIndex].pilot_response =
+                                    checkedState;
+                                  return newChecklistState;
+                                });
+                              }}
+                            />
+                          </div>
                         </div>
-                        <div className="items-top flex space-x-2">
-                          <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                            Pilot response
-                          </label>
-                          <Checkbox
-                            disabled={user.role !== "pilot" || checklistQuery.data?.submitted_at !== null}
-                            checked={task.pilot_response as boolean}
-                            className="w-5 h-5"
-                            onCheckedChange={(checkedState) => {
-                              setChecklistState((prevState) => {
-                                if (!prevState) return prevState;
-                                const newChecklistState = { ...prevState };
-                                newChecklistState.preFlightCheck![index].tasks[
-                                  taskIndex
-                                ].pilot_response = checkedState;
-                                return newChecklistState;
-                              });
-                            }}
-                          />
+                      ) : task.type === "input" ? (
+                        <div>
+                          <div className="flex items-center gap-2 justify-end">
+                            <Label>Mechanic Response</Label>
+                            <Input
+                              disabled={user.role !== "mechanic"}
+                              type="text"
+                              placeholder="Enter response"
+                              className="w-[150px] px-2 py-1 border rounded"
+                              value={task.mechanic_response?.toString()}
+                              onChange={(e) => {
+                                setChecklistState((prevState) => {
+                                  if (!prevState) return prevState;
+                                  const newChecklistState = { ...prevState };
+                                  newChecklistState.preFlightCheck![
+                                    index
+                                  ].tasks[taskIndex].mechanic_response =
+                                    e.target.value;
+                                  return newChecklistState;
+                                });
+                              }}
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 justify-end mt-2">
+                            <Label>Pilot Response</Label>
+                            <Input
+                              disabled={user.role !== "pilot"}
+                              type="text"
+                              placeholder="Enter response"
+                              className="w-[150px] px-2 py-1 border rounded"
+                              value={task.pilot_response?.toString()}
+                              onChange={(e) => {
+                                setChecklistState((prevState) => {
+                                  if (!prevState) return prevState;
+                                  const newChecklistState = { ...prevState };
+                                  newChecklistState.preFlightCheck![
+                                    index
+                                  ].tasks[taskIndex].pilot_response =
+                                    e.target.value;
+                                  return newChecklistState;
+                                });
+                              }}
+                            />
+                          </div>
                         </div>
-                      </div>
-                    ) : task.type === "input" ? (
-                      <div>
-                        <div className="flex items-center gap-2 justify-end">
-                          <Label>Mechanic Response</Label>
-                          <Input
-                            disabled={user.role !== "mechanic"}
-                            type="text"
-                            placeholder="Enter response"
-                            className="w-[150px] px-2 py-1 border rounded"
-                            value={task.mechanic_response?.toString()}
-                            onChange={(e) => {
-                              setChecklistState((prevState) => {
-                                if (!prevState) return prevState;
-                                const newChecklistState = { ...prevState };
-                                newChecklistState.preFlightCheck![index].tasks[
-                                  taskIndex
-                                ].mechanic_response = e.target.value;
-                                return newChecklistState;
-                              });
-                            }}
-                          />
-                        </div>
-                        <div className="flex items-center gap-2 justify-end mt-2">
-                          <Label>Pilot Response</Label>
-                          <Input
-                            disabled={user.role !== "pilot"}
-                            type="text"
-                            placeholder="Enter response"
-                            className="w-[150px] px-2 py-1 border rounded"
-                            value={task.pilot_response?.toString()}
-                            onChange={(e) => {
-                              setChecklistState((prevState) => {
-                                if (!prevState) return prevState;
-                                const newChecklistState = { ...prevState };
-                                newChecklistState.preFlightCheck![index].tasks[
-                                  taskIndex
-                                ].pilot_response = e.target.value;
-                                return newChecklistState;
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <div></div>
-                    )}
+                      ) : (
+                        <div></div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* Pagination Controls */}
       <ChecklistControls
@@ -343,6 +390,10 @@ export default function ChecklistPage() {
         }}
         submittedAt={submitted_at}
         isSaveChecklistMutationPending={saveChecklistMutation.isPending}
+      />
+      <DeletedChecklistDialog
+        showDeletedDialog={showDeletedDialog}
+        setShowDeletedDialog={setShowDeletedDialog}
       />
     </main>
   );
