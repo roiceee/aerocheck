@@ -121,12 +121,13 @@ export async function getChecklist(
         `
       )
       .eq(userRole === "pilot" ? "pilot_id" : "mechanic_id", userId)
-      .eq("id", checklistId); // Ensure we fetch the correct checklist by ID
+      .eq("id", checklistId)
+      .single(); // Ensure we fetch the correct checklist by ID
 
     if (error) throw error;
-    return data[0];
+    return data;
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.log(error);
     return null;
   }
 }
@@ -157,5 +158,19 @@ export async function getPilot(pilotId: string) {
   } catch (error) {
     console.error("Error fetching pilot:", error);
     return null;
+  }
+}
+
+export async function deleteChecklist(checklistId: string) {
+  try {
+    const { error } = await supabase
+      .from("checklists")
+      .delete()
+      .eq("id", checklistId);
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error("Error deleting checklist:", error);
+    return false;
   }
 }
