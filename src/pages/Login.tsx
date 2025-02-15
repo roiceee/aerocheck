@@ -1,30 +1,33 @@
 import { Button } from "@/components/ui/button";
 import supabase from "@/supabase-client";
 export default function Login() {
-  
   const handleLogin = async () => {
     supabase.auth.signInWithOAuth({ provider: "google" });
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center">
+    <main className="flex min-h-screen items-center justify-center text-center">
       <section className="flex flex-col items-center gap-4">
-        <img src="/logo.png" alt="Logo" className="w-24 h-24" />
-        <h2 className="text-xl font-bold">Aerocheck</h2>
+        <img src="/logo.png" alt="Logo" className="w-28 h-28" />
+        <h2 className="text-2xl font-bold">Aerocheck</h2>
+        <p>Pre-flight Inspection Checklist Application</p>
         <Button
-          className="flex items-center gap-2"
-          variant={"outline"}
+          className="flex items-center gap-4"
           onClick={handleLogin}
+          variant={"outline"}
+          size={"lg"}
         >
           <img
             src="https://developers.google.com/identity/images/g-logo.png"
             alt="Google Logo"
-            className="w-5 h-5"
+            className="w-7 h-7 rounded-full"
           />
-          <span className="text-gray-700 font-medium">
-            Continue with Google
-          </span>
+          <span className="text-lg">Continue with Google</span>
         </Button>
+        <p className="text-sm text-muted-foreground fixed bottom-0 my-3">
+          For internal use by Adventure Flight Education and Sports Inc., Davao
+          City
+        </p>
       </section>
     </main>
   );
