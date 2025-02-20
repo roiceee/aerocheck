@@ -1,10 +1,7 @@
-import { useState } from "react";
 import AddCheckListButton from "@/components/AddCheckListButton";
-import AuthContext from "@/context/AuthContext";
-import supabase from "@/supabase-client";
-import { useQuery } from "@tanstack/react-query";
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { QueryFilter } from "@/components/QueryFilter";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -12,44 +9,51 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, PlaneTakeoff, UserCheck, Wrench } from "lucide-react";
+import AuthContext from "@/context/AuthContext";
+import { checklistQuery } from "@/lib/checklistQueries";
+import { useQuery } from "@tanstack/react-query";
+import { PlaneTakeoff, UserCheck, Wrench, X } from "lucide-react";
+import { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Number of items per page
+  const [filters, setFilters] = useState<{
+    checklistId: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    showPending: boolean;
+  }>({
+    checklistId: "",
+    startDate: null as Date | null,
+    endDate: null as Date | null,
+    showPending: false,
+  });
 
   const {
     data: queryData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["checklists", currentPage], // Include currentPage in the queryKey
-    queryFn: async () => {
-      try {
-        const rangeStart = (currentPage - 1) * itemsPerPage;
-        const rangeEnd = rangeStart + itemsPerPage - 1;
-
-        const { data, error } = await supabase
-          .from("checklists")
-          .select(
-            `
-          *,
-          aircraft_models (*)
-        `
-          )
-          .order("created_at", { ascending: false })
-          .eq(user.role === "pilot" ? "pilot_id" : "mechanic_id", user.user!.id)
-          .range(rangeStart, rangeEnd); // Add range for pagination
-
-        if (error) throw error;
-        return data;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        return null;
-      }
+    queryKey: [
+      "checklists",
+      currentPage,
+      filters.checklistId,
+      filters.startDate,
+      filters.endDate,
+      filters.showPending,
+    ], // Include currentPage in the queryKey
+    queryFn: () => {
+      return checklistQuery(
+        currentPage,
+        itemsPerPage,
+        user.role as string,
+        user.user!.id,
+        filters
+      );
     },
   });
 
@@ -60,7 +64,52 @@ export default function Home() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold">My Recent Checks</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-xl font-bold">My Recent Checks</h1>
+        {/* query filter here */}
+        <QueryFilter
+          userRole={user.role}
+          onFilterChange={setFilters}
+          filters={filters}
+        />
+        {/* show applied filters */}
+      </div>
+      <div className="space-x-2 my-4">
+        {/* remove filter button if there is any filter applied */}
+
+        {Object.values(filters).some((value) =>
+          typeof value === "string" ? value.length : value
+        ) && (
+          <Button
+            variant={"outline"}
+            size={"sm"}
+            onClick={() =>
+              setFilters({
+                checklistId: "",
+                startDate: null,
+                endDate: null,
+                showPending: false,
+              })
+            }
+          >
+            <X /> Clear
+          </Button>
+        )}
+        {filters.checklistId && (
+          <Badge variant="outline">Checklist ID: {filters.checklistId}</Badge>
+        )}
+        {filters.startDate && (
+          <Badge variant="outline">
+            Start Date: {filters.startDate.toLocaleDateString()}
+          </Badge>
+        )}
+        {filters.endDate && (
+          <Badge variant="outline">
+            End Date: {filters.endDate.toLocaleDateString()}
+          </Badge>
+        )}
+        {filters.showPending && <Badge variant="outline">Show Pending</Badge>}
+      </div>
       <div className="my-2">
         {isLoading ? (
           <p>Loading...</p>
@@ -79,9 +128,15 @@ export default function Home() {
                       <CardTitle className="text-xl">
                         {checklist.aircraft_models?.name || "Unknown Aircraft"}
                       </CardTitle>
-                      <CardDescription className="text-md">
-                        <span className="font-bold">Checklist ID: </span>
-                        {checklist.id}
+                      <CardDescription className="text-sm">
+                        <span className="block">
+                          <span className="font-bold">Checklist ID: </span>
+                          {checklist.id}
+                        </span>
+                        <span>
+                          <span className="font-bold">Created At: </span>
+                          {new Date(checklist.created_at).toLocaleString()}
+                        </span>
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -92,6 +147,8 @@ export default function Home() {
                             variant={
                               checklist.approved_by_mechanic
                                 ? "success"
+                                : user.role === "mechanic"
+                                ? "warning"
                                 : "secondary"
                             }
                           >
@@ -106,6 +163,8 @@ export default function Home() {
                             variant={
                               checklist.approved_by_pilot
                                 ? "success"
+                                : user.role === "pilot"
+                                ? "warning"
                                 : "secondary"
                             }
                           >
@@ -136,7 +195,7 @@ export default function Home() {
                       <p className="text-md mt-4">
                         {checklist.submitted_at ? (
                           <span className="flex items-center gap-1 italic">
-                            <Calendar/>{" "}
+                            Submitted{" "}
                             {new Date(
                               checklist.submitted_at as string
                             ).toLocaleString()}
