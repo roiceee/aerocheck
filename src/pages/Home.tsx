@@ -1,24 +1,16 @@
 import AddCheckListButton from "@/components/AddCheckListButton";
+import CheckCard from "@/components/CheckCard";
 import { QueryFilter } from "@/components/QueryFilter";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import AuthContext from "@/context/AuthContext";
 import { checklistQuery } from "@/lib/checklistQueries";
 import { useQuery } from "@tanstack/react-query";
-import { PlaneTakeoff, UserCheck, Wrench, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function Home() {
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Number of items per page
   const [filters, setFilters] = useState<{
@@ -120,92 +112,12 @@ export default function Home() {
             <ul>
               {queryData.map((checklist) => (
                 <li key={checklist.id}>
-                  <Card
-                    className="mb-4 cursor-pointer"
-                    onClick={() => navigate(`/checklist/${checklist.id}`)}
-                  >
-                    <CardHeader>
-                      <CardTitle className="text-xl">
-                        {checklist.aircraft_models?.name || "Unknown Aircraft"}
-                      </CardTitle>
-                      <CardDescription className="text-sm">
-                        <span className="block">
-                          <span className="font-bold">Checklist ID: </span>
-                          {checklist.id}
-                        </span>
-                        <span>
-                          <span className="font-bold">Created At: </span>
-                          {new Date(checklist.created_at).toLocaleString()}
-                        </span>
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="flex flex-col gap-2 w-fit">
-                          <Badge
-                            className="text-sm"
-                            variant={
-                              checklist.approved_by_mechanic
-                                ? "success"
-                                : user.role === "mechanic"
-                                ? "warning"
-                                : "secondary"
-                            }
-                          >
-                            <Wrench className="mr-1" />
-                            Mechanic:{" "}
-                            {checklist.approved_by_mechanic
-                              ? "Approved"
-                              : "Pending"}
-                          </Badge>
-                          <Badge
-                            className="text-sm"
-                            variant={
-                              checklist.approved_by_pilot
-                                ? "success"
-                                : user.role === "pilot"
-                                ? "warning"
-                                : "secondary"
-                            }
-                          >
-                            <PlaneTakeoff className="mr-1" />
-                            Pilot:{" "}
-                            {checklist.approved_by_pilot
-                              ? "Approved"
-                              : "Pending"}
-                          </Badge>
-                          {checklist.submitted_at && (
-                            <Badge
-                              className="text-sm"
-                              variant={
-                                checklist.approved_by_superadmin
-                                  ? "success"
-                                  : "secondary"
-                              }
-                            >
-                              <UserCheck className="mr-1" />
-                              Superadmin:{" "}
-                              {checklist.approved_by_superadmin
-                                ? "Approved"
-                                : "Pending"}
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                      <p className="text-md mt-4">
-                        {checklist.submitted_at ? (
-                          <span className="flex items-center gap-1 italic">
-                            Submitted{" "}
-                            {new Date(
-                              checklist.submitted_at as string
-                            ).toLocaleString()}
-                          </span>
-                        ) : (
-                          <span>Not Submitted</span>
-                        )}
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <CheckCard
+                    checklist={checklist}
+                    aircraftModel={checklist.aircraft_models.name}
+                    userRole={user.role as string}
+                    userId={user.user!.id}
+                  />
                 </li>
               ))}
             </ul>
