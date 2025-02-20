@@ -1,6 +1,6 @@
 import AuthContext from "@/context/AuthContext";
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function ProtectedRoute({
   children,
@@ -8,17 +8,34 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const navigate = useNavigate();
+  const location = useLocation()
   const { user, loading } = useContext(AuthContext);
+
+
 
   useEffect(() => {
     const checkUser = async () => {
       if (!user.user) {
         navigate("/login", { replace: true });
       }
+
+      
+      //if user is admin and tries to access pages not starting with /admin, redirect to /admin
+      if (user.user && user.role === "superadmin" && !location.pathname.startsWith("/admin")) {
+        console.log(user.user);
+        console.log("sheesh");
+        navigate("/admin", { replace: true });
+      }
+
+      // if user is not admin and tries to access /admin, redirect to /
+      if (user.user && user.role !== "superadmin" && location.pathname.startsWith("/admin")) {
+        navigate("/", { replace: true });
+      }
+
     };
 
     if (!loading) checkUser();
-  }, [navigate, user, loading]);
+  }, [navigate, user, loading, location.pathname]);
 
   if (loading)
     return (
