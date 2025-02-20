@@ -59,11 +59,7 @@ export default function Home() {
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-bold">My Recent Checks</h1>
         {/* query filter here */}
-        <QueryFilter
-          userRole={user.role}
-          onFilterChange={setFilters}
-          filters={filters}
-        />
+        <QueryFilter onFilterChange={setFilters} filters={filters} />
         {/* show applied filters */}
       </div>
       <div className="space-x-2 my-4">
@@ -116,7 +112,6 @@ export default function Home() {
                     checklist={checklist}
                     aircraftModel={checklist.aircraft_models.name}
                     userRole={user.role as string}
-                    userId={user.user!.id}
                   />
                 </li>
               ))}
