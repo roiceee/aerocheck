@@ -1,6 +1,77 @@
 import supabase from "@/supabase-client";
 import { AircraftChecklist } from "@/types/checklistTemplate";
 
+
+export async function checklistQuery(
+  currentPage: number,
+  itemsPerPage: number,
+  userRole: string,
+  userId: string,
+  filters: {
+    checklistId: string;
+    startDate: Date | null;
+    endDate: Date | null;
+    showPending: boolean;
+  }
+) {
+      try {
+        const rangeStart = (currentPage - 1) * itemsPerPage;
+        const rangeEnd = rangeStart + itemsPerPage - 1;
+
+        let baseQuery = supabase
+          .from("checklists")
+          .select(
+            `
+          *,
+          aircraft_models (*)
+        `
+          )
+          .order("created_at", { ascending: false })
+          .eq(userRole === "pilot" ? "pilot_id" : "mechanic_id", userId)
+          .range(rangeStart, rangeEnd); // Add range for pagination
+
+        if (filters.checklistId) {
+          baseQuery = baseQuery.filter(
+            "id",
+            "eq",
+            `${String(filters.checklistId)}`
+          );
+        }
+
+        if (filters.startDate) {
+          baseQuery = baseQuery.gte(
+            "created_at",
+            filters.startDate.toISOString()
+          );
+        }
+
+        if (filters.endDate) {
+          const endOfDay = new Date(filters.endDate);
+          endOfDay.setHours(23, 59, 59, 999);
+          baseQuery = baseQuery.lte("created_at", endOfDay.toISOString());
+        }
+
+        if (filters.showPending) {
+          baseQuery = baseQuery.eq(
+            userRole === "pilot"
+              ? "approved_by_pilot"
+              : userRole === "mechanic"
+              ? "approved_by_mechanic"
+              : "approved_by_superadmin",
+            false
+          );
+        }
+
+        const { data, error } = await baseQuery;
+
+        if (error) throw error;
+        return data;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return null;
+      }
+}
+
 export async function saveOrSubmit({
   checklist,
   isInspectionApproved,
