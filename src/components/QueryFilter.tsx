@@ -4,27 +4,26 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { CalendarIcon, Settings2Icon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
 } from "./ui/drawer";
 
 interface QueryFilterProps {
-  userRole: "mechanic" | "pilot" | "superadmin" | null;
   onFilterChange: (filters: {
     checklistId: string;
     startDate: Date | null;
@@ -39,11 +38,7 @@ interface QueryFilterProps {
   };
 }
 
-export const QueryFilter = ({
-  userRole,
-  onFilterChange,
-  filters,
-}: QueryFilterProps) => {
+export const QueryFilter = ({ onFilterChange, filters }: QueryFilterProps) => {
   const [checklistId, setChecklistId] = useState(filters.checklistId);
   const [startDate, setStartDate] = useState<Date | null>(filters.startDate);
   const [endDate, setEndDate] = useState<Date | null>(filters.endDate);
@@ -128,9 +123,7 @@ export const QueryFilter = ({
                     selected={startDate || undefined}
                     onSelect={(date) => setStartDate(date ? date : null)}
                     initialFocus
-                    disabled={
-                      (date) =>  date > new Date()
-                    }
+                    disabled={(date) => date > new Date()}
                   />
                 </PopoverContent>
               </Popover>
@@ -162,27 +155,21 @@ export const QueryFilter = ({
                     selected={endDate || undefined}
                     onSelect={(date) => setEndDate(date || null)}
                     initialFocus
-                    disabled={
-                      (date) =>  date > new Date()
-                    }
+                    disabled={(date) => date > new Date()}
                   />
                 </PopoverContent>
               </Popover>
             </div>
 
             {/* Pending Checklists Filter */}
-            {(userRole === "mechanic" || userRole === "pilot") && (
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="showPending"
-                  checked={showPending}
-                  onCheckedChange={(checked) =>
-                    setShowPending(checked === true)
-                  }
-                />
-                <Label htmlFor="showPending">Show Pending</Label>
-              </div>
-            )}
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="showPending"
+                checked={showPending}
+                onCheckedChange={(checked) => setShowPending(checked === true)}
+              />
+              <Label htmlFor="showPending">Show Pending</Label>
+            </div>
           </div>
         </div>
 
