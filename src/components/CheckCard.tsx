@@ -14,7 +14,6 @@ interface Props {
   checklist: Database["public"]["Tables"]["checklists"]["Row"];
   aircraftModel: string | undefined | null;
   userRole: string;
-  userId: string;
 }
 
 export default function CheckCard({ checklist, aircraftModel, userRole }: Props) {
