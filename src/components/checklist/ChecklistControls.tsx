@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 interface Props {
   onPreviousPageClick: () => void;
@@ -29,6 +30,7 @@ interface Props {
   onChecklistApprove: () => void;
   onChecklistUnapprove: () => void;
   isChecklistApproved: boolean;
+  checklistId: string;
 }
 
 function PaginationControls({
@@ -166,16 +168,22 @@ function SuperadminControls({
   onChecklistApprove,
   onChecklistUnapprove,
   isChecklistApproved,
+  checklistId,
 }: Pick<
   Props,
-  "onChecklistApprove" | "onChecklistUnapprove" | "isChecklistApproved"
+  | "onChecklistApprove"
+  | "onChecklistUnapprove"
+  | "isChecklistApproved"
+  | "checklistId"
 >) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
     <>
       <div className="flex gap-2 justify-end items-center">
-        <Button>Export to PDF</Button>
+        <Link to={`/admin/checklist/pdf/${checklistId}`} target="_blank">
+          <Button>Export to PDF</Button>
+        </Link>
         <Button variant={"outline"} onClick={() => setDialogOpen(true)}>
           {isChecklistApproved ? "Unapprove" : "Approve"}
         </Button>
