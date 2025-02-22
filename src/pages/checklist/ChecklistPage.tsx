@@ -296,7 +296,7 @@ export default function ChecklistPage() {
                             />
                           </div>
                           <div className="items-top flex space-x-2">
-                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:text-muted-foreground">
                               Pilot response
                             </label>
                             <Checkbox
@@ -446,6 +446,7 @@ export default function ChecklistPage() {
               : () => {}
           }
           isChecklistApproved={checklistQuery.data.approved_by_superadmin}
+          checklistId={params.id!}
         />
       )}{" "}
       <DeletedChecklistDialog
