@@ -9,7 +9,7 @@ export default function MainLayout({
   return (
     <>
       <Navbar />
-      <div className="p-2">{children}</div>
+      <div className="p-2 max-w-[900px] mx-auto mt-4">{children}</div>
       <Footer />
     </>
   );

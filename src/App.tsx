@@ -7,6 +7,7 @@ import AdminHomePage from "./pages/admin/AdminHomePage";
 import ChecklistPage from "./pages/checklist/ChecklistPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import ExportToPdfPage from "./pages/admin/ExportToPdfPage";
 
 const protectedRoutes = [
   { path: "/", element: <Home /> },
@@ -18,7 +19,7 @@ const protectedRoutes = [
 
 function App() {
   return (
-    <main className="max-w-[900px] mx-auto">
+    <main className="max-w-[1920px] mx-auto">
       <BrowserRouter>
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -33,6 +34,15 @@ function App() {
               }
             />
           ))}
+
+          <Route
+            path={`/admin/checklist/pdf/:id`}
+            element={
+              <div>
+                <ExportToPdfPage />
+              </div>
+            }
+          />
           <Route
             path="*"
             element={
