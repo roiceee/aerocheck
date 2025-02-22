@@ -23,7 +23,7 @@ export default function AdminCheckCard({
   return (
     <Card
       className="mb-4 cursor-pointer"
-      onClick={() => navigate(`/checklist/${checklist.id}`)}
+      onClick={() => navigate(`/admin/checklist/${checklist.id}`)}
     >
       <CardHeader>
         <CardTitle className="text-xl">
@@ -51,7 +51,7 @@ export default function AdminCheckCard({
                 }
               >
                 <UserCheck className="mr-1" />
-                Superadmin:{" "}
+                Approval:{" "}
                 {checklist.approved_by_superadmin ? "Approved" : "Pending"}
               </Badge>
             )}

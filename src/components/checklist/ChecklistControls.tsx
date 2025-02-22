@@ -1,5 +1,5 @@
-import { Button } from "../ui/button";
-import { Checkbox } from "../ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -7,7 +7,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../ui/dialog";
+} from "@/components/ui/dialog";
 import { useState } from "react";
 
 interface Props {
@@ -25,13 +25,47 @@ interface Props {
   onSaveClick: () => void;
   submittedAt: string | null;
   isSaveChecklistMutationPending: boolean;
+  userRole?: "mechanic" | "pilot" | "superadmin";
+  onChecklistApprove: () => void;
+  onChecklistUnapprove: () => void;
+  isChecklistApproved: boolean;
 }
 
-export default function ChecklistControls({
+function PaginationControls({
   onPreviousPageClick,
   onNextPageClick,
   currentPage,
   totalPages,
+}: Pick<
+  Props,
+  "onPreviousPageClick" | "onNextPageClick" | "currentPage" | "totalPages"
+>) {
+  return (
+    <div className="flex gap-2 items-center mb-2 justify-between">
+      <Button
+        onClick={onPreviousPageClick}
+        disabled={currentPage === 1}
+        className="px-4 py-2 rounded disabled:opacity-50"
+        variant={"outline"}
+      >
+        Previous
+      </Button>
+      <span>
+        Page {currentPage} of {totalPages}
+      </span>
+      <Button
+        variant={"outline"}
+        onClick={onNextPageClick}
+        disabled={currentPage === totalPages}
+        className="px-4 py-2 rounded disabled:opacity-50"
+      >
+        Next
+      </Button>
+    </div>
+  );
+}
+
+function MechanicPilotControls({
   isMechanicCheckboxDisabled,
   isMechanicCheckboxChecked,
   mechanicCheckboxOnChange,
@@ -42,32 +76,23 @@ export default function ChecklistControls({
   onSaveClick,
   submittedAt,
   isSaveChecklistMutationPending,
-}: Props) {
+}: Pick<
+  Props,
+  | "isMechanicCheckboxDisabled"
+  | "isMechanicCheckboxChecked"
+  | "mechanicCheckboxOnChange"
+  | "isPilotCheckboxDisabled"
+  | "isPilotCheckboxChecked"
+  | "pilotCheckboxOnChange"
+  | "onSaveAndSubmitClick"
+  | "onSaveClick"
+  | "submittedAt"
+  | "isSaveChecklistMutationPending"
+>) {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   return (
-    <div className="fixed bottom-0 w-full bg-neutral-50 shadow-md p-4 border-t-2 max-w-[900px]">
-      <div className="flex gap-2 items-center mb-2 justify-between">
-        <Button
-          onClick={onPreviousPageClick}
-          disabled={currentPage === 1}
-          className="px-4 py-2 rounded disabled:opacity-50"
-          variant={"outline"}
-        >
-          Previous
-        </Button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <Button
-          variant={"outline"}
-          onClick={onNextPageClick}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 rounded disabled:opacity-50"
-        >
-          Next
-        </Button>
-      </div>
+    <>
       <div className="flex gap-4 justify-end items-center">
         <div>
           <div className="flex items-center gap-1">
@@ -133,6 +158,78 @@ export default function ChecklistControls({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+    </>
+  );
+}
+
+function SuperadminControls({
+  onChecklistApprove,
+  onChecklistUnapprove,
+  isChecklistApproved,
+}: Pick<
+  Props,
+  "onChecklistApprove" | "onChecklistUnapprove" | "isChecklistApproved"
+>) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  return (
+    <>
+      <div className="flex gap-2 justify-end items-center">
+        <Button>Export to PDF</Button>
+        <Button variant={"outline"} onClick={() => setDialogOpen(true)}>
+          {isChecklistApproved ? "Unapprove" : "Approve"}
+        </Button>
+      </div>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {isChecklistApproved ? "Unapprove" : "Approve"} Checklist
+            </DialogTitle>
+          </DialogHeader>
+          <DialogDescription>
+            {isChecklistApproved
+              ? "Are you sure you want to unapprove the checklist?"
+              : "Are you sure you want to approve the checklist?"}
+          </DialogDescription>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (isChecklistApproved) {
+                  onChecklistUnapprove();
+                } else {
+                  onChecklistApprove();
+                }
+                setDialogOpen(false);
+              }}
+            >
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}
+
+export default function ChecklistControls(props: Props) {
+  const { userRole } = props;
+
+  return (
+    <div className="fixed bottom-0 w-full bg-neutral-50 shadow-md p-4 border-t-2 max-w-[900px]">
+      <PaginationControls
+        onPreviousPageClick={props.onPreviousPageClick}
+        onNextPageClick={props.onNextPageClick}
+        currentPage={props.currentPage}
+        totalPages={props.totalPages}
+      />
+
+      {userRole !== "superadmin" && <MechanicPilotControls {...props} />}
+      {userRole === "superadmin" && <SuperadminControls {...props} />}
     </div>
   );
 }

@@ -196,7 +196,7 @@ export async function getChecklist(
   checklistId: string
 ) {
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("checklists")
       .select(
         `
@@ -204,9 +204,17 @@ export async function getChecklist(
           aircraft_models (*)
         `
       )
-      .eq(userRole === "pilot" ? "pilot_id" : "mechanic_id", userId)
-      .eq("id", checklistId)
-      .single(); // Ensure we fetch the correct checklist by ID
+      .eq("id", checklistId);
+
+    // Restrict access for pilots and mechanics
+    if (userRole !== "superadmin") {
+      query = query.eq(
+        userRole === "pilot" ? "pilot_id" : "mechanic_id",
+        userId
+      );
+    }
+
+    const { data, error } = await query.single();
 
     if (error) throw error;
     return data;
@@ -215,6 +223,7 @@ export async function getChecklist(
     return null;
   }
 }
+
 export async function getMechanic(mechanicId: string) {
   try {
     const { data, error } = await supabase
@@ -256,5 +265,41 @@ export async function deleteChecklist(checklistId: string) {
   } catch (error) {
     console.error("Error deleting checklist:", error);
     return false;
+  }
+}
+
+export async function approveChecklist(checklistId: string, adminId: string) {
+  try {
+    const { data, error } = await supabase
+      .from("checklists")
+      .update({
+        approved_by_superadmin: true,
+        superadmin_id: adminId,
+      })
+      .eq("id", checklistId)
+      .single();
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error approving checklist:", error);
+    return null;
+  }
+}
+
+export async function unapproveChecklist(checklistId: string) {
+  try {
+    const { data, error } = await supabase
+      .from("checklists")
+      .update({
+        approved_by_superadmin: false,
+        superadmin_id: null,
+      })
+      .eq("id", checklistId)
+      .single();
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error("Error unapproving checklist:", error);
+    return null;
   }
 }

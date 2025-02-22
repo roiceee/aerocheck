@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AuthContext from "@/context/AuthContext";
 import {
+  approveChecklist,
   getChecklist,
   getMechanic,
   getPilot,
   saveOrSubmit,
+  unapproveChecklist,
 } from "@/lib/checklistQueries";
 import supabase from "@/supabase-client";
 import { AircraftChecklist } from "@/types/checklistTemplate";
@@ -116,6 +118,35 @@ export default function ChecklistPage() {
     },
   });
 
+  const approveChecklistMutation = useMutation({
+    mutationFn: async ({
+      checklistId,
+      adminId,
+    }: {
+      checklistId: string;
+      adminId: string;
+    }) => {
+      return approveChecklist(checklistId, adminId);
+    },
+    onSettled: () => {
+      checklistQuery.refetch();
+    },
+  });
+
+  const unapproveChecklistMutation = useMutation({
+    mutationFn: async ({
+      checklistId,
+    }: {
+      checklistId: string;
+      adminId: string;
+    }) => {
+      return unapproveChecklist(checklistId);
+    },
+    onSettled: () => {
+      checklistQuery.refetch();
+    },
+  });
+
   // Paginate the sections
   const preFlightSections = checklistState?.preFlightCheck || [];
   const postFlightSections = checklistState?.postFlightCheck || [];
@@ -158,7 +189,10 @@ export default function ChecklistPage() {
         {checklistQuery.data && (
           <DeleteButton
             checklistId={checklistQuery.data.id}
-            disabled={checklistQuery.data.submitted_at !== null}
+            disabled={
+              user.role !== "superadmin" &&
+              checklistQuery.data.submitted_at !== null
+            }
           />
         )}
       </div>
@@ -191,7 +225,6 @@ export default function ChecklistPage() {
           )}
         </div>
       )}
-
       {/* Render the sections for the current page */}
       <h1 className="text-lg mt-6">Checklist</h1>
       {checklistQuery.isError ? (
@@ -343,54 +376,78 @@ export default function ChecklistPage() {
           ))}
         </div>
       )}
-
       {/* Pagination Controls */}
-      <ChecklistControls
-        onPreviousPageClick={goToPreviousPage}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onNextPageClick={goToNextPage}
-        isMechanicCheckboxDisabled={
-          user.role !== "mechanic" || checklistQuery.data?.submitted_at !== null
-        }
-        isMechanicCheckboxChecked={isInspectionApproved.mechanic}
-        mechanicCheckboxOnChange={(checkedState: boolean) => {
-          setIsInspectionApproved((prevState) => ({
-            ...prevState,
-            [user.role === "mechanic" ? "mechanic" : "pilot"]: checkedState,
-          }));
-        }}
-        isPilotCheckboxDisabled={
-          user.role !== "pilot" || checklistQuery.data?.submitted_at !== null
-        }
-        isPilotCheckboxChecked={isInspectionApproved.pilot}
-        pilotCheckboxOnChange={(checkedState: boolean) => {
-          setIsInspectionApproved((prevState) => ({
-            ...prevState,
-            [user.role === "mechanic" ? "mechanic" : "pilot"]: checkedState,
-          }));
-        }}
-        onSaveAndSubmitClick={() => {
-          saveChecklistMutation.mutate({
-            checklist: checklistState!,
-            isInspectionApproved,
-            submit: true,
-            checklistId: params.id as string,
-            userRole: user.role,
-          });
-        }}
-        onSaveClick={() => {
-          saveChecklistMutation.mutate({
-            checklist: checklistState!,
-            isInspectionApproved,
-            submit: false,
-            checklistId: params.id as string,
-            userRole: user.role,
-          });
-        }}
-        submittedAt={submitted_at}
-        isSaveChecklistMutationPending={saveChecklistMutation.isPending}
-      />
+      {checklistQuery.data && (
+        <ChecklistControls
+          userRole={user.role!}
+          onPreviousPageClick={goToPreviousPage}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onNextPageClick={goToNextPage}
+          isMechanicCheckboxDisabled={
+            user.role !== "mechanic" ||
+            checklistQuery.data.submitted_at !== null
+          }
+          isMechanicCheckboxChecked={isInspectionApproved.mechanic}
+          mechanicCheckboxOnChange={(checkedState: boolean) => {
+            setIsInspectionApproved((prevState) => ({
+              ...prevState,
+              [user.role === "mechanic" ? "mechanic" : "pilot"]: checkedState,
+            }));
+          }}
+          isPilotCheckboxDisabled={
+            user.role !== "pilot" || checklistQuery.data.submitted_at !== null
+          }
+          isPilotCheckboxChecked={isInspectionApproved.pilot}
+          pilotCheckboxOnChange={(checkedState: boolean) => {
+            setIsInspectionApproved((prevState) => ({
+              ...prevState,
+              [user.role === "mechanic" ? "mechanic" : "pilot"]: checkedState,
+            }));
+          }}
+          onSaveAndSubmitClick={() => {
+            saveChecklistMutation.mutate({
+              checklist: checklistState!,
+              isInspectionApproved,
+              submit: true,
+              checklistId: params.id as string,
+              userRole: user.role,
+            });
+          }}
+          onSaveClick={() => {
+            saveChecklistMutation.mutate({
+              checklist: checklistState!,
+              isInspectionApproved,
+              submit: false,
+              checklistId: params.id as string,
+              userRole: user.role,
+            });
+          }}
+          submittedAt={submitted_at}
+          isSaveChecklistMutationPending={saveChecklistMutation.isPending}
+          onChecklistApprove={
+            user.role === "superadmin"
+              ? () => {
+                  approveChecklistMutation.mutate({
+                    checklistId: params.id as string,
+                    adminId: user.user!.id,
+                  });
+                }
+              : () => {}
+          }
+          onChecklistUnapprove={
+            user.role === "superadmin"
+              ? () => {
+                  unapproveChecklistMutation.mutate({
+                    checklistId: params.id as string,
+                    adminId: user.user!.id,
+                  });
+                }
+              : () => {}
+          }
+          isChecklistApproved={checklistQuery.data.approved_by_superadmin}
+        />
+      )}{" "}
       <DeletedChecklistDialog
         showDeletedDialog={showDeletedDialog}
         setShowDeletedDialog={setShowDeletedDialog}
