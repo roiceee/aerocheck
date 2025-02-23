@@ -2,7 +2,12 @@ import { Button } from "@/components/ui/button";
 import supabase from "@/supabase-client";
 export default function Login() {
   const handleLogin = async () => {
-    supabase.auth.signInWithOAuth({ provider: "google" });
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: import.meta.env.VITE_SIGN_IN_REDIRECT_URL,
+      },
+    });
   };
 
   return (
