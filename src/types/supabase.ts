@@ -52,6 +52,24 @@ export type Database = {
         }
         Relationships: []
       }
+      allowed_users: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: number
+        }
+        Relationships: []
+      }
       checklist_templates: {
         Row: {
           aircraft_model_id: string | null
@@ -133,6 +151,20 @@ export type Database = {
             columns: ["aircraft_model_id"]
             isOneToOne: false
             referencedRelation: "aircraft_models"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklists_mechanic_id_fkey1"
+            columns: ["mechanic_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checklists_pilot_id_fkey1"
+            columns: ["pilot_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
