@@ -169,7 +169,7 @@ export async function saveOrSubmit({
     ) {
       updateData = {
         ...updateData,
-        submitted_at: new Date().toISOString(),
+        submitted_at: new Date(Date.now()).toISOString(),
       };
     } else if (submit && !(freshApprovedByMechanic && freshApprovedByPilot)) {
       alert(
