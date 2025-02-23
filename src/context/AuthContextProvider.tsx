@@ -2,6 +2,7 @@ import supabase from "@/supabase-client";
 import { User } from "@supabase/auth-js";
 import React, { useEffect, useState } from "react";
 import AuthContext from "./AuthContext";
+import { toast } from "sonner";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<{
@@ -11,46 +12,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     user: null,
     role: null,
   });
-  const [loading, setLoading] = useState(true);
+  const [loadingState, setLoadingState] = useState<
+    "initial" | "loading" | "done"
+  >("initial");
 
   const getUserRole = async (
     user: User
   ): Promise<"mechanic" | "pilot" | "superadmin" | null> => {
     const { data, error } = await supabase
       .from("user_roles")
-      .select("*")
-      .eq("user_id", user.id);
-    if (error || !data[0]) {
-      return null;
-    } else {
-      return data[0].role;
-    }
+      .select("role")
+      .eq("user_id", user.id)
+      .single();
+
+    return error ? null : data.role;
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        const role = await getUserRole(data.user);
-        setUser({ user: data.user, role: role ?? null });
-      }
-      setLoading(false);
-    };
+    setLoadingState("loading");
 
-    fetchUser();
-
-    // Listen for auth state changes (login, logout)
     const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_, session) => {
+      (event, session) => {
         setTimeout(async () => {
           const user = session?.user ?? null;
           if (user) {
-            const role = await getUserRole(user);
-            setUser({ user, role: role ?? null });
+            if (event === "SIGNED_IN") {
+              const { data: allowedUser, error: fetchError } = await supabase
+                .from("allowed_users")
+                .select("email")
+                .eq("email", user.email!)
+                .single();
+
+              if (fetchError || !allowedUser) {
+                await supabase.auth.signOut();
+                toast("You are not allowed to access this app");
+                setLoadingState("done");
+              } else {
+                const role = await getUserRole(user);
+                setUser({ user, role: role ?? null });
+                setLoadingState("done");
+              }
+            }
           } else {
             setUser({ user: null, role: null });
+            setLoadingState("done");
           }
-          setLoading(false);
         }, 0);
       }
     );
@@ -60,11 +66,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     const { data, error } = await supabase.auth.getUser();
+  //     if (data?.user) {
+  //       const role = await getUserRole(data.user);
+  //       console.log("this gets invoked");
+  //       console.log(data.user);
+  //       setUser({ user: data.user, role: role ?? null });
+  //       setLoadingState("done");
+  //     } else if (error) {
+  //       console.log("error");
+  //       setLoadingState("done");
+  //     }
+  //   };
+
+  //   fetchUser();
+  // }, []);
+
   return (
-    <AuthContext.Provider value={{ user, setUser, loading }}>
+    <AuthContext.Provider value={{ user, setUser, loadingState }}>
       {children}
     </AuthContext.Provider>
   );

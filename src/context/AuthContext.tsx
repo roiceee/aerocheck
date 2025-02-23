@@ -10,10 +10,10 @@ const AuthContext = createContext<{
       role: "mechanic" | "pilot" | "superadmin" | null;
     }>
   >;
-  loading: boolean;
+  loadingState: "initial" | "loading" | "done";
 }>({
   user: { user: null, role: null },
   setUser: () => null,
-  loading: true,
+  loadingState: "initial",
 });
 export default AuthContext;

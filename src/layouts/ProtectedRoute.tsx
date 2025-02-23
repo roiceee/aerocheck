@@ -8,42 +8,47 @@ export default function ProtectedRoute({
   children: React.ReactNode;
 }) {
   const navigate = useNavigate();
-  const location = useLocation()
-  const { user, loading } = useContext(AuthContext);
-
-
+  const location = useLocation();
+  const { user, loadingState } = useContext(AuthContext);
 
   useEffect(() => {
+    if (loadingState !== "done") return; // Only run checks when loading is done
+
     const checkUser = async () => {
       if (!user.user) {
-        navigate("/login", { replace: true });
+        await navigate("/login", { replace: true });
+        return;
       }
 
-      
-      //if user is admin and tries to access pages not starting with /admin, redirect to /admin
-      if (user.user && user.role === "superadmin" && !location.pathname.startsWith("/admin")) {
-        console.log(user.user);
-        console.log("sheesh");
-        navigate("/admin", { replace: true });
+      // If user is admin and tries to access pages not starting with /admin, redirect to /admin
+      if (
+        user.user &&
+        user.role === "superadmin" &&
+        !location.pathname.startsWith("/admin")
+      ) {
+        await navigate("/admin", { replace: true });
+        return;
       }
 
-      // if user is not admin and tries to access /admin, redirect to /
-      if (user.user && user.role !== "superadmin" && location.pathname.startsWith("/admin")) {
-        navigate("/", { replace: true });
+      // If user is not admin and tries to access /admin, redirect to /
+      if (
+        user.user &&
+        user.role !== "superadmin" &&
+        location.pathname.startsWith("/admin")
+      ) {
+        await navigate("/", { replace: true });
+        return;
       }
-
     };
 
-    if (!loading) checkUser();
-  }, [navigate, user, loading, location.pathname]);
+    checkUser();
+  }, [navigate, user, loadingState, location.pathname]);
 
-  if (loading)
-    return (
-      //   <div className="flex justify-center items-center h-screen">
-      //     <img src="/logo.png" height={100} width={100} />
-      //   </div>
-      <></>
-    ); // Prevents flickering while checking auth
+  // Don't render anything until loadingState is "done"
+  if (loadingState !== "done") return null;
+
+  if (!user.user) return null;
+
 
   return children;
 }
