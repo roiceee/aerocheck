@@ -55,18 +55,21 @@ export type Database = {
       allowed_users: {
         Row: {
           created_at: string
-          email: string | null
+          email: string
           id: number
+          initial_role: Database["public"]["Enums"]["role_enum"]
         }
         Insert: {
           created_at?: string
-          email?: string | null
+          email: string
           id?: number
+          initial_role: Database["public"]["Enums"]["role_enum"]
         }
         Update: {
           created_at?: string
-          email?: string | null
+          email?: string
           id?: number
+          initial_role?: Database["public"]["Enums"]["role_enum"]
         }
         Relationships: []
       }
@@ -113,6 +116,7 @@ export type Database = {
           list: Json
           mechanic_id: string | null
           pilot_id: string | null
+          rpc_number: string | null
           submitted_at: string | null
           superadmin_id: string | null
           template_id: string
@@ -127,6 +131,7 @@ export type Database = {
           list: Json
           mechanic_id?: string | null
           pilot_id?: string | null
+          rpc_number?: string | null
           submitted_at?: string | null
           superadmin_id?: string | null
           template_id: string
@@ -141,6 +146,7 @@ export type Database = {
           list?: Json
           mechanic_id?: string | null
           pilot_id?: string | null
+          rpc_number?: string | null
           submitted_at?: string | null
           superadmin_id?: string | null
           template_id?: string
