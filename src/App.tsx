@@ -38,9 +38,9 @@ function App() {
           <Route
             path={`/admin/checklist/pdf/:id`}
             element={
-              <div>
+              <ProtectedRoute>
                 <ExportToPdfPage />
-              </div>
+              </ProtectedRoute>
             }
           />
           <Route
