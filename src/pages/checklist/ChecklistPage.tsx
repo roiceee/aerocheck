@@ -202,6 +202,12 @@ export default function ChecklistPage() {
             {checklistQuery.data.aircraft_models.name}
           </h1>
           <p className="text-sm text-muted-foreground">
+            RPC Number:{" "}
+            <span className="text-primary">
+              {checklistQuery.data.rpc_number}
+            </span>
+          </p>
+          <p className="text-sm text-muted-foreground">
             Created at (mm/dd/yyyy):{" "}
             <span className="text-primary">
               {new Date(checklistQuery.data.created_at).toLocaleString()}

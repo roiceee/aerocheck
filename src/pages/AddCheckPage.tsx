@@ -40,6 +40,7 @@ const formSchema = z.object({
   isExistingChecklist: z.boolean(),
   airplaneModel: z.string().min(1, "Please select an aircraft model"),
   coCheckerUserId: z.string().min(1, "Please select a co-checker"),
+  rpcNumber: z.string().optional(),
   date: z.string().optional(),
   time: z.string().optional(),
   approvedByMechanic: z.boolean(),
@@ -112,6 +113,7 @@ export default function AddCheckPage() {
             approved_by_mechanic: values.approvedByMechanic,
             approved_by_pilot: values.approvedByPilot,
             approved_by_superadmin: false,
+            rpc_number: values.rpcNumber,
             template_id: checklistTemplateRes.data[0].id,
             list: checklistTemplateRes.data[0].list,
             created_at: values.isExistingChecklist
@@ -168,6 +170,22 @@ export default function AddCheckPage() {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* add rpc number input (string) */}
+
+          <FormField
+            control={form.control}
+            name="rpcNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>RPC Number</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -246,39 +264,41 @@ export default function AddCheckPage() {
                 name="date"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Date</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant="outline"
-                            className={cn(
-                              "w-[280px] justify-start text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            <CalendarIcon />
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={
-                            field.value ? new Date(field.value) : undefined
-                          }
-                          onSelect={(date) =>
-                            field.onChange(date?.toISOString())
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <FormLabel className="mr-1">Date</FormLabel>
+                    <div>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className={cn(
+                                "w-[280px] justify-start text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon />
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={
+                              field.value ? new Date(field.value) : undefined
+                            }
+                            onSelect={(date) =>
+                              field.onChange(date?.toISOString())
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -291,7 +311,7 @@ export default function AddCheckPage() {
                   <FormItem>
                     <FormLabel>Time</FormLabel>
                     <FormControl>
-                      <Input type="time" {...field} />
+                      <Input type="time" {...field} className="w-min" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

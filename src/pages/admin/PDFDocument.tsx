@@ -66,12 +66,12 @@ export default function PDFDocument({
     checkbox: {
       marginBottom: 5,
       marginLeft: 10,
-      maxWidth: "350",
+      maxWidth: "320",
     },
     input: {
       marginBottom: 5,
       marginLeft: 10,
-      maxWidth: "350",
+      maxWidth: "320",
     },
     response: {
       marginLeft: 20,
@@ -159,6 +159,9 @@ export default function PDFDocument({
               PRE-FLIGHT INSPECTION CHECKLIST
             </Text>
             <Text style={styles.subHeader}>{data?.aircraft_models.name}</Text>
+            <Text style={styles.documentInfo}>
+              RPC Number: {data?.rpc_number ?? "N/A"}
+            </Text>
             <Text style={styles.documentInfo}>
               Created At: {new Date(data?.created_at).toLocaleString()}
             </Text>
