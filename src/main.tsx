@@ -4,6 +4,7 @@ import App from "./App.tsx";
 import { AuthProvider } from "./context/AuthContextProvider.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "./components/ui/sonner.tsx";
+import ReloadPrompt from "./components/reloadprompt/ReloadPrompt.tsx";
 
 const queryClient = new QueryClient();
 
@@ -14,6 +15,7 @@ createRoot(document.getElementById("root")!).render(
         <App />
         <Toaster />
       </AuthProvider>
+      <ReloadPrompt />
     </QueryClientProvider>
   </StrictMode>
 );
