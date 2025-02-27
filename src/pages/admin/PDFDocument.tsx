@@ -14,6 +14,7 @@ export default function PDFDocument({
   data,
   pilotName,
   mechanicName,
+  title,
 }: {
   data: Database["public"]["Tables"]["checklists"]["Row"] & {
     aircraft_models: Database["public"]["Tables"]["aircraft_models"]["Row"];
@@ -21,6 +22,7 @@ export default function PDFDocument({
 
   pilotName: string;
   mechanicName: string;
+  title: string;
 }) {
   const preFlightCheck = (data?.list as AircraftChecklist).preFlightCheck || [];
   const postFlightCheck =
@@ -157,11 +159,7 @@ export default function PDFDocument({
 
   const ChecklistDocument = useMemo(
     () => (
-      <Document
-        title={`${data.aircraft_models.name} - ${new Date(
-          data.created_at
-        ).toLocaleString()}`}
-      >
+      <Document title={title}>
         <Page style={styles.page} size={"A4"}>
           <View>
             <View>
