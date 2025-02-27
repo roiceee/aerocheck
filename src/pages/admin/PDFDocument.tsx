@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { AircraftChecklist, Section, Task } from "@/types/checklistTemplate";
 import { Database } from "@/types/supabase";
 import {
@@ -213,7 +214,6 @@ export default function PDFDocument({
           </View>
         </Page>
       </Document>
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     ),
     []
   );
