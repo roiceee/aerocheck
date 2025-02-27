@@ -1,10 +1,14 @@
-import {
-  AircraftChecklist,
-  Section,
-  Task
-} from "@/types/checklistTemplate";
+import { AircraftChecklist, Section, Task } from "@/types/checklistTemplate";
 import { Database } from "@/types/supabase";
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import {
+  Document,
+  Image,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
+import { useMemo } from "react";
 export default function PDFDocument({
   data,
   pilotName,
@@ -27,6 +31,13 @@ export default function PDFDocument({
       fontFamily: "Helvetica",
       fontSize: 11,
       width: "100%",
+    },
+    image: {
+      height: 50,
+      width: "auto",
+      marginLeft: "auto",
+      marginRight: "auto",
+      marginBottom: 10,
     },
     header: {
       fontSize: 18,
@@ -143,61 +154,69 @@ export default function PDFDocument({
     ));
   };
 
-  const ChecklistDocument = () => (
-    <Document
-      title={`${data.aircraft_models.name} - ${new Date(
-        data.created_at
-      ).toLocaleString()}`}
-    >
-      <Page style={styles.page} size={"A4"}>
-        <View>
+  const ChecklistDocument = useMemo(
+    () => (
+      <Document
+        title={`${data.aircraft_models.name} - ${new Date(
+          data.created_at
+        ).toLocaleString()}`}
+      >
+        <Page style={styles.page} size={"A4"}>
           <View>
-            <Text style={styles.header}>
-              ADVENTURE FLIGHT EDUCATION & SPORTS, INC.
-            </Text>
-            <Text style={styles.subHeader}>
-              PRE-FLIGHT INSPECTION CHECKLIST
-            </Text>
-            <Text style={styles.subHeader}>{data?.aircraft_models.name}</Text>
-            <Text style={styles.documentInfo}>
-              RPC Number: {data?.rpc_number ?? "N/A"}
-            </Text>
-            <Text style={styles.documentInfo}>
-              Created At: {new Date(data?.created_at).toLocaleString()}
-            </Text>
-            <Text style={styles.documentInfo}>
-              Submitted At:{" "}
-              {data?.submitted_at
-                ? new Date(data?.submitted_at).toLocaleString()
-                : "Not Submitted"}
-            </Text>
-            <Text style={styles.documentInfo}>
-              Approval: {data?.approved_by_superadmin ? "Approved" : "Pending"}
-            </Text>
-            <Text style={styles.documentInfo}>Checklist ID: {data?.id}</Text>
-            <Text style={styles.documentInfo}>
-              Checking Mechanic: {mechanicName}
-            </Text>
-            <Text style={styles.documentInfo}>Checking Pilot: {pilotName}</Text>
+            <View>
+              <Image src={"/afes.png"} style={styles.image}></Image>
+              <Text style={styles.header}>
+                ADVENTURE FLIGHT EDUCATION & SPORTS, INC.
+              </Text>
+              <Text style={styles.subHeader}>
+                PRE-FLIGHT INSPECTION CHECKLIST
+              </Text>
+              <Text style={styles.subHeader}>{data?.aircraft_models.name}</Text>
+              <Text style={styles.documentInfo}>
+                RPC Number: {data?.rpc_number ?? "N/A"}
+              </Text>
+              <Text style={styles.documentInfo}>
+                Created At: {new Date(data?.created_at).toLocaleString()}
+              </Text>
+              <Text style={styles.documentInfo}>
+                Submitted At:{" "}
+                {data?.submitted_at
+                  ? new Date(data?.submitted_at).toLocaleString()
+                  : "Not Submitted"}
+              </Text>
+              <Text style={styles.documentInfo}>
+                Approval:{" "}
+                {data?.approved_by_superadmin ? "Approved" : "Pending"}
+              </Text>
+              <Text style={styles.documentInfo}>Checklist ID: {data?.id}</Text>
+              <Text style={styles.documentInfo}>
+                Checking Mechanic: {mechanicName}
+              </Text>
+              <Text style={styles.documentInfo}>
+                Checking Pilot: {pilotName}
+              </Text>
+            </View>
+            <View>
+              {preFlightCheck && (
+                <View>
+                  <Text style={styles.sectionTitle}>Pre-Flight Check</Text>
+                  {renderSections(preFlightCheck)}
+                </View>
+              )}
+              {postFlightCheck && (
+                <View>
+                  <Text style={styles.sectionTitle}>Post-Flight Check</Text>
+                  {renderSections(postFlightCheck)}
+                </View>
+              )}
+            </View>
           </View>
-          <View>
-            {preFlightCheck && (
-              <View>
-                <Text style={styles.sectionTitle}>Pre-Flight Check</Text>
-                {renderSections(preFlightCheck)}
-              </View>
-            )}
-            {postFlightCheck && (
-              <View>
-                <Text style={styles.sectionTitle}>Post-Flight Check</Text>
-                {renderSections(postFlightCheck)}
-              </View>
-            )}
-          </View>
-        </View>
-      </Page>
-    </Document>
+        </Page>
+      </Document>
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    ),
+    []
   );
 
-  return <ChecklistDocument />;
+  return ChecklistDocument;
 }
