@@ -23,9 +23,9 @@ export default function Login() {
           size={"lg"}
         >
           <img
-            src="https://developers.google.com/identity/images/g-logo.png"
+            src="/google-logo.png"
             alt="Google Logo"
-            className="w-7 h-7 rounded-full"
+            className="w-7 rounded-full"
           />
           <span className="text-lg">Continue with Google</span>
         </Button>
