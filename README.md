@@ -37,7 +37,8 @@ Then open [http://localhost:5173](http://localhost:5173) in your browser.
 - **CI/CD:** Standard Vercel deployment from the main branch.  
 
 ## Usage  
-- Pilots and mechanics log in via Google OAuth.  
+- Pilots, mechanics, and superadmins log in via Google OAuth.
+- Users cannot login if they aren't pre-approved in the admin dashboard.  
 - Users can collaboratively complete and verify aircraft checklists before takeoff.  
 - Data is stored in Supabase for record-keeping.  
 
