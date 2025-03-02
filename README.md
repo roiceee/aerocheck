@@ -1,50 +1,50 @@
-# React + TypeScript + Vite
+# Aerocheck  
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview  
+**Aerocheck** is an internal digital preflight checklist system designed for pilots and mechanics to collaboratively verify aircraft conditions before takeoff.  
 
-Currently, two official plugins are available:
+## Tech Stack  
+- **Frontend:** React (Vite) + TypeScript  
+- **Backend:** Supabase (Cloud)  
+- **Authentication:** Supabase Google OAuth  
+- **PWA:** Vite PWA Plugin  
+- **Deployment:** Frontend on Vercel, Backend on Supabase Cloud  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Setup & Installation  
+1. Clone the repository:  
+   ```sh
+   git clone <repo-url>
+   cd aerocheck
+   ```  
+2. Install dependencies:  
+   ```sh
+   npm install  # or pnpm install
+   ```  
+3. Set up environment variables:  
+   - Copy `.env.example` to `.env` and update the values accordingly.  
+   - The app relies on a Supabase Cloud backend, so ensure you have the correct API keys and database settings.  
 
-## Expanding the ESLint configuration
+## Running the App  
+For development:  
+```sh
+npm run dev
+```  
+Then open [http://localhost:5173](http://localhost:5173) in your browser.  
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Deployment  
+- **Frontend:** Deployed via Vercel.  
+- **Backend:** Managed on Supabase Cloud.  
+- **CI/CD:** Standard Vercel deployment from the main branch.  
 
-- Configure the top-level `parserOptions` property like this:
+## Usage  
+- Pilots and mechanics log in via Google OAuth.  
+- Users can collaboratively complete and verify aircraft checklists before takeoff.  
+- Data is stored in Supabase for record-keeping.  
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Troubleshooting  
+- Ensure all `.env` variables are correctly set.  
+- Check Supabase logs for backend issues.  
+- Use browser dev tools for PWA debugging.  
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## Maintainer  
+This project is currently maintained by [John Roice Aldeza](https://github.com/roiceee).
