@@ -15,6 +15,7 @@ export default function Login() {
       <section className="flex flex-col items-center gap-4">
         <img src="/logo.png" alt="Logo" className="w-28 h-28" />
         <h2 className="text-2xl font-bold">Aerocheck</h2>
+        <div>update ni</div>
         <p>Pre-flight Inspection Checklist Application</p>
         <Button
           className="flex items-center gap-4"
