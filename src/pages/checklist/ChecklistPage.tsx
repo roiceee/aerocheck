@@ -4,7 +4,6 @@ import DeleteButton from "@/components/checklist/DeleteButton";
 import DeletedChecklistDialog from "@/components/checklist/DeletedChecklistDialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import AuthContext from "@/context/AuthContext";
 import {
   approveChecklist,
@@ -278,7 +277,14 @@ export default function ChecklistPage() {
                       {task.type === "checkbox" ? (
                         <div className="flex flex-col items-end gap-2">
                           <div className="items-top flex space-x-2">
-                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                            <label
+                              className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                                user.role === "superadmin" &&
+                                !task.mechanic_response
+                                  ? "text-red-500"
+                                  : ""
+                              }`}
+                            >
                               Mechanic response
                             </label>
                             <Checkbox
@@ -302,7 +308,14 @@ export default function ChecklistPage() {
                             />
                           </div>
                           <div className="items-top flex space-x-2">
-                            <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:text-muted-foreground">
+                            <label
+                              className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                                user.role === "superadmin" &&
+                                !task.pilot_response
+                                  ? "text-red-500"
+                                  : ""
+                              }`}
+                            >
                               Pilot response
                             </label>
                             <Checkbox
@@ -329,7 +342,16 @@ export default function ChecklistPage() {
                       ) : task.type === "input" ? (
                         <div>
                           <div className="flex items-center gap-2 justify-end">
-                            <Label>Mechanic Response</Label>
+                            <label
+                              className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                                user.role === "superadmin" &&
+                                !task.mechanic_response
+                                  ? "text-red-500"
+                                  : ""
+                              }`}
+                            >
+                              Mechanic Response
+                            </label>
                             <Input
                               disabled={user.role !== "mechanic"}
                               type="text"
@@ -350,7 +372,16 @@ export default function ChecklistPage() {
                             />
                           </div>
                           <div className="flex items-center gap-2 justify-end mt-2">
-                            <Label>Pilot Response</Label>
+                            <label
+                              className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
+                                user.role === "superadmin" &&
+                                !task.pilot_response
+                                  ? "text-red-500"
+                                  : ""
+                              }`}
+                            >
+                              Pilot Response
+                            </label>
                             <Input
                               disabled={user.role !== "pilot"}
                               type="text"
