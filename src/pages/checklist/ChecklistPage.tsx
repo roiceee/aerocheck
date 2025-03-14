@@ -282,7 +282,7 @@ export default function ChecklistPage() {
                                 user.role === "superadmin" &&
                                 !task.mechanic_response
                                   ? "text-red-500"
-                                  : ""
+                                  : "text-green-600"
                               }`}
                             >
                               Mechanic response
@@ -313,7 +313,7 @@ export default function ChecklistPage() {
                                 user.role === "superadmin" &&
                                 !task.pilot_response
                                   ? "text-red-500"
-                                  : ""
+                                  : "text-green-600"
                               }`}
                             >
                               Pilot response
@@ -347,7 +347,7 @@ export default function ChecklistPage() {
                                 user.role === "superadmin" &&
                                 !task.mechanic_response
                                   ? "text-red-500"
-                                  : ""
+                                  : "text-green-600"
                               }`}
                             >
                               Mechanic Response
@@ -377,7 +377,7 @@ export default function ChecklistPage() {
                                 user.role === "superadmin" &&
                                 !task.pilot_response
                                   ? "text-red-500"
-                                  : ""
+                                  : "text-green-600"
                               }`}
                             >
                               Pilot Response
