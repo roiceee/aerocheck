@@ -30,7 +30,7 @@ export default function Login() {
           <Button
             className="flex items-center gap-4"
             onClick={handleLogin}
-            variant={"outline"}
+          variant={"secondary"}
             size={"lg"}
           >
             <img
