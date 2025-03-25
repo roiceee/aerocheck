@@ -279,7 +279,6 @@ export default function ChecklistPage() {
                           <div className="items-top flex space-x-2">
                             <label
                               className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
-                                user.role === "superadmin" &&
                                 !task.mechanic_response
                                   ? "text-red-500"
                                   : "text-green-600"
@@ -310,7 +309,6 @@ export default function ChecklistPage() {
                           <div className="items-top flex space-x-2">
                             <label
                               className={`text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 ${
-                                user.role === "superadmin" &&
                                 !task.pilot_response
                                   ? "text-red-500"
                                   : "text-green-600"

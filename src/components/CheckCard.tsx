@@ -29,6 +29,10 @@ export default function CheckCard({ checklist, aircraftModel, userRole }: Props)
         </CardTitle>
         <CardDescription className="text-sm">
           <span className="block">
+            <span className="font-bold">RPC Number: </span>
+            {checklist.rpc_number ?? "---"}
+          </span>
+          <span className="block">
             <span className="font-bold">Checklist ID: </span>
             {checklist.id}
           </span>
