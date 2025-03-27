@@ -7,6 +7,9 @@ export default function Login() {
       provider: "google",
       options: {
         redirectTo: import.meta.env.VITE_SIGN_IN_REDIRECT_URL,
+        queryParams: {
+          prompt: "select_account"
+        }
       },
     });
   };
