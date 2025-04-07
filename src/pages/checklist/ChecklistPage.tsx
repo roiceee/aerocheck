@@ -429,6 +429,13 @@ export default function ChecklistPage() {
               ...prevState,
               [user.role === "mechanic" ? "mechanic" : "pilot"]: checkedState,
             }));
+            saveChecklistMutation.mutate({
+              checklist: checklistState!,
+              isInspectionApproved,
+              submit: false,
+              checklistId: params.id as string,
+              userRole: user.role,
+            });
           }}
           isPilotCheckboxDisabled={
             user.role !== "pilot" || checklistQuery.data.submitted_at !== null
@@ -439,6 +446,13 @@ export default function ChecklistPage() {
               ...prevState,
               [user.role === "mechanic" ? "mechanic" : "pilot"]: checkedState,
             }));
+            saveChecklistMutation.mutate({
+              checklist: checklistState!,
+              isInspectionApproved,
+              submit: false,
+              checklistId: params.id as string,
+              userRole: user.role,
+            });
           }}
           onSaveAndSubmitClick={() => {
             saveChecklistMutation.mutate({

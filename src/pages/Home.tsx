@@ -1,6 +1,7 @@
 import AddCheckListButton from "@/components/AddCheckListButton";
 import CheckCard from "@/components/CheckCard";
 import { QueryFilter } from "@/components/QueryFilter";
+import ReloadButton from "@/components/ReloadButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/AuthContext";
@@ -29,6 +30,7 @@ export default function Home() {
     data: queryData,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: [
       "checklists",
@@ -57,7 +59,10 @@ export default function Home() {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-bold">My Recent Checks</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-bold">My Recent Checks</h1>
+          <ReloadButton onClick={refetch} />
+        </div>
         {/* query filter here */}
         <QueryFilter onFilterChange={setFilters} filters={filters} />
         {/* show applied filters */}

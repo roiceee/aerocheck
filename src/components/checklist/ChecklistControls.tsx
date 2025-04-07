@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import ReloadButton from "../ReloadButton";
 
 interface Props {
   onPreviousPageClick: () => void;
@@ -38,31 +39,39 @@ function PaginationControls({
   onNextPageClick,
   currentPage,
   totalPages,
+  onSaveClick,
 }: Pick<
   Props,
-  "onPreviousPageClick" | "onNextPageClick" | "currentPage" | "totalPages"
+  | "onPreviousPageClick"
+  | "onNextPageClick"
+  | "currentPage"
+  | "totalPages"
+  | "onSaveClick"
 >) {
   return (
-    <div className="flex gap-2 items-center mb-2 justify-between">
-      <Button
-        onClick={onPreviousPageClick}
-        disabled={currentPage === 1}
-        className="px-4 py-2 rounded disabled:opacity-50"
-        variant={"outline"}
-      >
-        Previous
-      </Button>
-      <span>
-        Page {currentPage} of {totalPages}
-      </span>
-      <Button
-        variant={"outline"}
-        onClick={onNextPageClick}
-        disabled={currentPage === totalPages}
-        className="px-4 py-2 rounded disabled:opacity-50"
-      >
-        Next
-      </Button>
+    <div className="flex justify-between">
+      <ReloadButton onClick={onSaveClick} />
+      <div className="flex gap-2 items-center mb-2 justify-end">
+        <Button
+          onClick={onPreviousPageClick}
+          disabled={currentPage === 1}
+          className="px-4 py-2 rounded disabled:opacity-50"
+          variant={"outline"}
+        >
+          {"<"}
+        </Button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          variant={"outline"}
+          onClick={onNextPageClick}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 rounded disabled:opacity-50"
+        >
+          {">"}
+        </Button>
+      </div>
     </div>
   );
 }
@@ -234,6 +243,7 @@ export default function ChecklistControls(props: Props) {
         onNextPageClick={props.onNextPageClick}
         currentPage={props.currentPage}
         totalPages={props.totalPages}
+        onSaveClick={props.onSaveClick}
       />
 
       {userRole !== "superadmin" && <MechanicPilotControls {...props} />}
