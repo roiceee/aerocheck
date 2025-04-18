@@ -13,6 +13,15 @@ export default function ExportToPdfPage() {
   const { user } = useContext(AuthContext);
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
+  // iOS PWA detection
+  const isIos = /iphone|ipad|ipod/.test(
+    window.navigator.userAgent.toLowerCase()
+  );
+  const isInStandaloneMode =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    "standalone" in window.navigator && (window.navigator as any).standalone;
+  const isIosPwa = isIos && isInStandaloneMode;
+
   const { data, isLoading } = useQuery({
     queryKey: ["checklist", "pdf", id],
     queryFn: async () => getChecklist(user.role as string, user.user!.id, id!),
@@ -51,9 +60,28 @@ export default function ExportToPdfPage() {
     />
   );
 
+  // Handle iOS PWA limitation
+  if (isIosPwa) {
+    return (
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center p-4">
+        <img src="/afes.png" className="h-[100px] w-auto mx-auto mb-4" />
+        <p className="mb-2">
+          PDF preview is not supported in iOS PWA mode. Please open this page in
+          Safari or Chrome.
+        </p>
+        <Button
+          size={"lg"}
+          onClick={() => window.open(window.location.href, "_blank")}
+        >
+          Open in Browser
+        </Button>
+      </div>
+    );
+  }
+
   return isMobile ? (
     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-      <img src="/afes.png" className="h-[100px] w-auto mx-auto"/>
+      <img src="/afes.png" className="h-[100px] w-auto mx-auto mb-4" />
       <p>
         Export PDF: <span className="font-semibold block">{pdfTitle}</span>
       </p>
