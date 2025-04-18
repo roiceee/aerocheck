@@ -49,6 +49,33 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 setLoadingState("done");
               } else {
                 const role = await getUserRole(user);
+
+                if (!role) {
+                  const { data } = await supabase
+                    .from("allowed_users")
+                    .select("*")
+                    .eq("email", user.email!)
+                    .single();
+
+                  // for cases where the user is already in the database
+                  if (data?.initial_role) {
+                    const fetchedRole = data.initial_role as
+                      | "mechanic"
+                      | "pilot"
+                      | "superadmin";
+                    await supabase.from("user_roles").insert({
+                      user_id: user.id,
+                      role: fetchedRole,
+                    } as {
+                      user_id: string;
+                      role: "mechanic" | "pilot" | "superadmin";
+                    });
+                    setUser({ user, role: fetchedRole });
+                    setLoadingState("done");
+                    return;
+                  }
+                }
+
                 setUser({ user, role: role ?? null });
                 setLoadingState("done");
               }
